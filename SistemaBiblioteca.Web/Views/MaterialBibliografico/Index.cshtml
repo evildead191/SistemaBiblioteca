@@ -1,0 +1,484 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.MaterialBibliografico.MaterialBibliograficoIndexViewModel
+
+@{
+    ViewData["Title"] = "Catálogo bibliográfico";
+}
+
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Catálogo bibliográfico</h1>
+            <p class="text-muted mb-0">
+                Consulte y administre los materiales registrados.
+            </p>
+        </div>
+
+        <button type="button"
+                class="btn btn-primary"
+                id="btnAbrirCrearMaterial">
+            Registrar material
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Index"
+                  method="get"
+                  class="row g-2 mb-4">
+
+                <div class="col-md-9">
+                    <input asp-for="Busqueda"
+                           class="form-control"
+                           placeholder="Buscar por ficha, clasificación, autor o título" />
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-primary flex-grow-1">
+                        Buscar
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            @if (!Model.Materiales.Any())
+            {
+                <div class="text-center py-5">
+                    <h2 class="h5">No se encontraron materiales</h2>
+                    <p class="text-muted mb-0">
+                        Registre un nuevo material o cambie el criterio de búsqueda.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ficha</th>
+                                <th>Clasificación</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Año</th>
+                                <th>Ejemplares</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var material in Model.Materiales)
+                            {
+                                <tr>
+                                    <td>@material.NumeroFicha</td>
+                                    <td>@material.Clasificacion</td>
+                                    <td>@material.Titulo</td>
+                                    <td>@material.Autor</td>
+
+                                    <td>
+                                        @(material.AnioPublicacion?.ToString() ?? "—")
+                                    </td>
+
+                                    <td>@material.CantidadEjemplares</td>
+
+                                    <td>
+                                        @if (material.Activo)
+                                        {
+                                            <span class="badge text-bg-success">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge text-bg-secondary">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-2">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-primary btn-editar-material"
+                                                    data-id="@material.IdMaterialBibliografico">
+                                                Editar
+                                            </button>
+
+                                            <form asp-action="CambiarEstado"
+                                                  method="post"
+                                                  class="d-inline form-cambiar-estado"
+                                                  data-accion="@(material.Activo ? "desactivar" : "activar")"
+                                                  data-titulo="@material.Titulo">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@material.IdMaterialBibliografico" />
+
+                                                <button type="submit"
+                                                        class="btn btn-sm @(material.Activo
+                                                                    ? "btn-outline-danger"
+                                                                    : "btn-outline-success")">
+
+                                                    @(material.Activo
+                                                        ? "Desactivar"
+                                                        : "Activar")
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade"
+     id="modalMaterial"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="tituloModalMaterial">
+                    Material bibliográfico
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body"
+                 id="contenidoModalMaterial">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalElement =
+                document.getElementById("modalMaterial");
+
+            const modal =
+                new bootstrap.Modal(modalElement);
+
+            const contenido =
+                document.getElementById("contenidoModalMaterial");
+
+            const titulo =
+                document.getElementById("tituloModalMaterial");
+
+            const botonAbrirCrear =
+                document.getElementById("btnAbrirCrearMaterial");
+
+            const mensajeExito =
+                @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                    TempData["MensajeExito"]));
+
+            const mensajeError =
+                @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                    TempData["MensajeError"]));
+
+            function activarValidacion(selectorFormulario) {
+                const formulario =
+                    document.querySelector(selectorFormulario);
+
+                if (!formulario) {
+                    return;
+                }
+
+                $(formulario).removeData("validator");
+                $(formulario).removeData(
+                    "unobtrusiveValidation");
+
+                $.validator.unobtrusive.parse(formulario);
+            }
+
+            botonAbrirCrear.addEventListener(
+                "click",
+                async function () {
+
+                    titulo.textContent =
+                        "Registrar material bibliográfico";
+
+                    try {
+                        const respuesta = await fetch(
+                            "/MaterialBibliografico/CrearModal");
+
+                        if (!respuesta.ok) {
+                            throw new Error(
+                                "No se pudo cargar el formulario.");
+                        }
+
+                        contenido.innerHTML =
+                            await respuesta.text();
+
+                        activarValidacion(
+                            "#formCrearMaterial");
+
+                        modal.show();
+                    }
+                    catch {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo abrir el formulario",
+                            text: "Ocurrió un problema al cargar el formulario de registro.",
+                            confirmButtonText: "Aceptar"
+                        });
+                    }
+                });
+
+            document.addEventListener(
+                "click",
+                async function (evento) {
+
+                    const botonEditar =
+                        evento.target.closest(
+                            ".btn-editar-material");
+
+                    if (!botonEditar) {
+                        return;
+                    }
+
+                    const id = botonEditar.dataset.id;
+
+                    titulo.textContent =
+                        "Editar material bibliográfico";
+
+                    try {
+                        const respuesta = await fetch(
+                            `/MaterialBibliografico/EditarModal?id=${id}`);
+
+                        if (!respuesta.ok) {
+                            throw new Error(
+                                "No se pudo cargar el material.");
+                        }
+
+                        contenido.innerHTML =
+                            await respuesta.text();
+
+                        activarValidacion(
+                            "#formEditarMaterial");
+
+                        modal.show();
+                    }
+                    catch {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo cargar",
+                            text: "No fue posible cargar el material bibliográfico.",
+                            confirmButtonText: "Aceptar"
+                        });
+                    }
+                });
+
+            contenido.addEventListener(
+                "submit",
+                async function (evento) {
+
+                    const formulario =
+                        evento.target.closest(
+                            "#formCrearMaterial, #formEditarMaterial");
+
+                    if (!formulario) {
+                        return;
+                    }
+
+                    evento.preventDefault();
+
+                    if (!$(formulario).valid()) {
+                        return;
+                    }
+
+                    const botonGuardar =
+                        formulario.querySelector(
+                            "button[type='submit']");
+
+                    if (botonGuardar) {
+                        botonGuardar.disabled = true;
+                    }
+
+                    const datos =
+                        new FormData(formulario);
+
+                    try {
+                        const respuesta = await fetch(
+                            formulario.action,
+                            {
+                                method: "POST",
+                                body: datos
+                            });
+
+                        const tipoContenido =
+                            respuesta.headers.get(
+                                "content-type");
+
+                        if (tipoContenido &&
+                            tipoContenido.includes(
+                                "application/json")) {
+
+                            const resultado =
+                                await respuesta.json();
+
+                            if (resultado.success) {
+                                modal.hide();
+
+                                sessionStorage.setItem(
+                                    "mensajeMaterial",
+                                    resultado.message);
+
+                                window.location.reload();
+                                return;
+                            }
+
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Atención",
+                                text: resultado.message,
+                                confirmButtonText: "Aceptar"
+                            });
+
+                            return;
+                        }
+
+                        contenido.innerHTML =
+                            await respuesta.text();
+
+                        if (formulario.id ===
+                            "formCrearMaterial") {
+
+                            activarValidacion(
+                                "#formCrearMaterial");
+                        }
+                        else {
+                            activarValidacion(
+                                "#formEditarMaterial");
+                        }
+                    }
+                    catch {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo guardar",
+                            text: "Ocurrió un problema al procesar la solicitud.",
+                            confirmButtonText: "Aceptar"
+                        });
+                    }
+                    finally {
+                        if (botonGuardar &&
+                            document.body.contains(
+                                botonGuardar)) {
+
+                            botonGuardar.disabled = false;
+                        }
+                    }
+                });
+
+            document
+                .querySelectorAll(
+                    ".form-cambiar-estado")
+                .forEach(function (formulario) {
+
+                    formulario.addEventListener(
+                        "submit",
+                        async function (evento) {
+
+                            evento.preventDefault();
+
+                            const accion =
+                                formulario.dataset.accion;
+
+                            const tituloMaterial =
+                                formulario.dataset.titulo;
+
+                            const esDesactivar =
+                                accion === "desactivar";
+
+                            const resultado =
+                                await Swal.fire({
+                                    icon: "warning",
+                                    title: esDesactivar
+                                        ? "¿Desactivar material?"
+                                        : "¿Activar material?",
+
+                                    text: esDesactivar
+                                        ? `¿Está seguro de que desea desactivar "${tituloMaterial}"?`
+                                        : `¿Está seguro de que desea activar "${tituloMaterial}"?`,
+
+                                    showCancelButton: true,
+
+                                    confirmButtonText:
+                                        esDesactivar
+                                            ? "Sí, desactivar"
+                                            : "Sí, activar",
+
+                                    cancelButtonText:
+                                        "Cancelar",
+
+                                    confirmButtonColor:
+                                        esDesactivar
+                                            ? "#dc3545"
+                                            : "#198754",
+
+                                    reverseButtons: true
+                                });
+
+                            if (resultado.isConfirmed) {
+                                formulario.submit();
+                            }
+                        });
+                });
+
+            const mensajeGuardado =
+                sessionStorage.getItem(
+                    "mensajeMaterial");
+
+            if (mensajeGuardado) {
+                sessionStorage.removeItem(
+                    "mensajeMaterial");
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación realizada",
+                    text: mensajeGuardado,
+                    confirmButtonText: "Aceptar"
+                });
+            }
+            else if (mensajeExito) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación realizada",
+                    text: mensajeExito,
+                    confirmButtonText: "Aceptar"
+                });
+            }
+            else if (mensajeError) {
+                Swal.fire({
+                    icon: "error",
+                    title: "No se pudo realizar la operación",
+                    text: mensajeError,
+                    confirmButtonText: "Aceptar"
+                });
+            }
+        });
+    </script>
+}

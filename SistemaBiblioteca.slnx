@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SistemaBiblioteca.Business/SistemaBiblioteca.Business.csproj" />
+  <Project Path="SistemaBiblioteca.DataAccess/SistemaBiblioteca.DataAccess.csproj" />
+  <Project Path="SistemaBiblioteca.Entities/SistemaBiblioteca.Entities.csproj" />
+  <Project Path="SistemaBiblioteca.web/SistemaBiblioteca.Web.csproj" />
+</Solution>
