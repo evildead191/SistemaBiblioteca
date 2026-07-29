@@ -1,0 +1,142 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.UsuarioBiblioteca.UsuarioBibliotecaEditViewModel
+
+<form asp-controller="UsuarioBiblioteca"
+      asp-action="Editar"
+      method="post"
+      novalidate>
+
+    @Html.AntiForgeryToken()
+
+    <input asp-for="Usuario.IdUsuarioBiblioteca"
+           type="hidden" />
+
+    <input asp-for="Usuario.Activo"
+           type="hidden" />
+
+    <div asp-validation-summary="ModelOnly"
+         class="alert alert-danger"
+         role="alert">
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-12 col-md-6">
+            <label asp-for="Usuario.Identificacion"
+                   class="form-label fw-semibold">
+                Identificación
+            </label>
+
+            <input asp-for="Usuario.Identificacion"
+                   class="form-control"
+                   placeholder="Ingrese la identificación"
+                   autocomplete="off" />
+
+            <span asp-validation-for="Usuario.Identificacion"
+                  class="text-danger small">
+            </span>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label asp-for="Usuario.TipoUsuario"
+                   class="form-label fw-semibold">
+                Tipo de usuario
+            </label>
+
+            <select asp-for="Usuario.TipoUsuario"
+                    asp-items="Model.TiposUsuario"
+                    class="form-select">
+            </select>
+
+            <span asp-validation-for="Usuario.TipoUsuario"
+                  class="text-danger small">
+            </span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Usuario.NombreCompleto"
+                   class="form-label fw-semibold">
+                Nombre completo
+            </label>
+
+            <input asp-for="Usuario.NombreCompleto"
+                   class="form-control"
+                   placeholder="Ingrese el nombre completo"
+                   autocomplete="off" />
+
+            <span asp-validation-for="Usuario.NombreCompleto"
+                  class="text-danger small">
+            </span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Usuario.SeccionODepartamento"
+                   class="form-label fw-semibold">
+                Sección o departamento
+            </label>
+
+            <input asp-for="Usuario.SeccionODepartamento"
+                   class="form-control"
+                   placeholder="Ejemplo: 5-A, Docentes o Administración"
+                   autocomplete="off" />
+
+            <span asp-validation-for="Usuario.SeccionODepartamento"
+                  class="text-danger small">
+            </span>
+
+            <div class="form-text">
+                Puede indicar la sección del estudiante o el departamento
+                del funcionario.
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label asp-for="Usuario.Correo"
+                   class="form-label fw-semibold">
+                Correo electrónico
+            </label>
+
+            <input asp-for="Usuario.Correo"
+                   type="email"
+                   class="form-control"
+                   placeholder="correo@ejemplo.com"
+                   autocomplete="off" />
+
+            <span asp-validation-for="Usuario.Correo"
+                  class="text-danger small">
+            </span>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label asp-for="Usuario.Telefono"
+                   class="form-label fw-semibold">
+                Teléfono
+            </label>
+
+            <input asp-for="Usuario.Telefono"
+                   type="tel"
+                   class="form-control"
+                   placeholder="Ejemplo: 8888-8888"
+                   autocomplete="off" />
+
+            <span asp-validation-for="Usuario.Telefono"
+                  class="text-danger small">
+            </span>
+        </div>
+
+    </div>
+
+    <div class="modal-footer px-0 pb-0 mt-4">
+        <button type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">
+            Cancelar
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary">
+            <i class="bi bi-save-fill me-2"></i>
+            Guardar cambios
+        </button>
+    </div>
+
+</form>

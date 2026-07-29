@@ -18,6 +18,8 @@ builder.Services.AddScoped<IMaterialBibliograficoRepository, MaterialBibliografi
 builder.Services.AddScoped<IMaterialBibliograficoService, MaterialBibliograficoService>();
 builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
 builder.Services.AddScoped<IEjemplarService, EjemplarService>();
+builder.Services.AddScoped<IUsuarioBibliotecaRepository, UsuarioBibliotecaRepository>();
+builder.Services.AddScoped<IUsuarioBibliotecaService, UsuarioBibliotecaService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

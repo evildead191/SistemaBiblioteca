@@ -1,0 +1,746 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.UsuarioBiblioteca.UsuarioBibliotecaIndexViewModel
+
+@{
+    ViewData["Title"] = "Usuarios de biblioteca";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="module-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <span class="module-eyebrow">
+                    Gestión bibliotecaria
+                </span>
+
+                <h1 class="module-title mb-2">
+                    Usuarios de biblioteca
+                </h1>
+
+                <p class="module-description mb-0">
+                    Registre y administre estudiantes, docentes,
+                    personal administrativo y otros usuarios autorizados.
+                </p>
+            </div>
+
+            <div>
+                <button type="button"
+                        class="btn btn-primary btn-lg"
+                        id="btnAbrirCrearUsuario">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Nuevo usuario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["MensajeExito"] is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    @if (TempData["MensajeError"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["MensajeError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+
+            <form asp-controller="UsuarioBiblioteca"
+                  asp-action="Index"
+                  method="get"
+                  class="row g-3 align-items-end">
+
+                <div class="col-12 col-lg-6">
+                    <label asp-for="Busqueda"
+                           class="form-label fw-semibold">
+                        Buscar usuario
+                    </label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input asp-for="Busqueda"
+                               class="form-control"
+                               placeholder="Identificación, nombre, correo, teléfono o sección" />
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label asp-for="TipoUsuario"
+                           class="form-label fw-semibold">
+                        Tipo de usuario
+                    </label>
+
+                    <select asp-for="TipoUsuario"
+                            asp-items="Model.TiposUsuario"
+                            class="form-select">
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-primary flex-grow-1">
+                            <i class="bi bi-search me-2"></i>
+                            Buscar
+                        </button>
+
+                        <a asp-controller="UsuarioBiblioteca"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Limpiar
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-0 px-4 pt-4 pb-3">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">
+                        Usuarios registrados
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Total encontrado:
+                        <strong>@Model.Usuarios.Count</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.Usuarios.Count == 0)
+            {
+                <div class="empty-state text-center px-4 py-5">
+                    <div class="empty-state-icon mb-3">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <h3 class="h5 fw-bold">
+                        No se encontraron usuarios
+                    </h3>
+
+                    <p class="text-muted mb-3">
+                        No existen registros que coincidan con los criterios seleccionados.
+                    </p>
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnCrearUsuarioEstadoVacio">
+                        <i class="bi bi-person-plus-fill me-2"></i>
+                        Registrar primer usuario
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">
+                                    Identificación
+                                </th>
+
+                                <th>
+                                    Nombre completo
+                                </th>
+
+                                <th>
+                                    Tipo
+                                </th>
+
+                                <th>
+                                    Sección o departamento
+                                </th>
+
+                                <th>
+                                    Contacto
+                                </th>
+
+                                <th class="text-center">
+                                    Estado
+                                </th>
+
+                                <th class="text-end pe-4">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var usuario in Model.Usuarios)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="fw-semibold">
+                                            @usuario.Identificacion
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="user-avatar">
+                                                @ObtenerIniciales(usuario.NombreCompleto)
+                                            </div>
+
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    @usuario.NombreCompleto
+                                                </div>
+
+                                                @if (!string.IsNullOrWhiteSpace(usuario.Correo))
+                                                {
+                                                    <small class="text-muted">
+                                                        @usuario.Correo
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge rounded-pill text-bg-light border">
+                                            @usuario.TipoUsuarioTexto
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(
+                                            usuario.SeccionODepartamento))
+                                        {
+                                            <span class="text-muted">
+                                                No indicado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @usuario.SeccionODepartamento
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(usuario.Telefono))
+                                        {
+                                            <div>
+                                                <i class="bi bi-telephone me-1 text-muted"></i>
+                                                @usuario.Telefono
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                No indicado
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (usuario.Activo)
+                                        {
+                                            <span class="badge text-bg-success">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge text-bg-secondary">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-2">
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-primary btn-editar-usuario"
+                                                    data-id="@usuario.IdUsuarioBiblioteca">
+                                                <i class="bi bi-pencil-square me-1"></i>
+                                                Editar
+                                            </button>
+
+                                            <form asp-controller="UsuarioBiblioteca"
+                                                  asp-action="CambiarEstado"
+                                                  method="post"
+                                                  class="d-inline formulario-cambiar-estado"
+                                                  data-nombre="@usuario.NombreCompleto"
+                                                  data-accion="@(usuario.Activo ? "desactivar" : "activar")">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@usuario.IdUsuarioBiblioteca" />
+
+                                                @if (usuario.Activo)
+                                                {
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-person-dash me-1"></i>
+                                                        Desactivar
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-person-check me-1"></i>
+                                                        Activar
+                                                    </button>
+                                                }
+                                            </form>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade"
+     id="modalUsuarioBiblioteca"
+     tabindex="-1"
+     aria-labelledby="tituloModalUsuarioBiblioteca"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title fs-5"
+                    id="tituloModalUsuarioBiblioteca">
+                    Usuario de biblioteca
+                </h2>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body"
+                 id="contenidoModalUsuarioBiblioteca">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@functions {
+    private static string ObtenerIniciales(string nombreCompleto)
+    {
+        if (string.IsNullOrWhiteSpace(nombreCompleto))
+        {
+            return "U";
+        }
+
+        string[] partes = nombreCompleto
+            .Split(
+                ' ',
+                StringSplitOptions.RemoveEmptyEntries);
+
+        if (partes.Length == 1)
+        {
+            return partes[0]
+                .Substring(0, 1)
+                .ToUpper();
+        }
+
+        return string.Concat(
+            partes[0][0],
+            partes[1][0])
+            .ToUpper();
+    }
+}
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const modalElemento =
+                document.getElementById("modalUsuarioBiblioteca");
+
+            const modalUsuario =
+                new bootstrap.Modal(modalElemento);
+
+            const tituloModal =
+                document.getElementById("tituloModalUsuarioBiblioteca");
+
+            const contenidoModal =
+                document.getElementById("contenidoModalUsuarioBiblioteca");
+
+            const btnAbrirCrearUsuario =
+                document.getElementById("btnAbrirCrearUsuario");
+
+            const btnCrearUsuarioEstadoVacio =
+                document.getElementById("btnCrearUsuarioEstadoVacio");
+
+            async function abrirModalCrear() {
+
+                tituloModal.textContent =
+                    "Registrar usuario de biblioteca";
+
+                contenidoModal.innerHTML =
+                    crearContenidoCargando();
+
+                modalUsuario.show();
+
+                try {
+
+                    const respuesta = await fetch(
+                        "@Url.Action("CrearModal", "UsuarioBiblioteca")",
+                        {
+                            method: "GET",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        });
+
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            "No fue posible cargar el formulario.");
+                    }
+
+                    contenidoModal.innerHTML =
+                        await respuesta.text();
+
+                    inicializarFormularioAjax();
+
+                } catch (error) {
+
+                    contenidoModal.innerHTML =
+                        crearContenidoError(error.message);
+                }
+            }
+
+            async function abrirModalEditar(idUsuario) {
+
+                tituloModal.textContent =
+                    "Editar usuario de biblioteca";
+
+                contenidoModal.innerHTML =
+                    crearContenidoCargando();
+
+                modalUsuario.show();
+
+                try {
+
+                    const url =
+                        "@Url.Action("EditarModal", "UsuarioBiblioteca")"
+                        + "?id="
+                        + encodeURIComponent(idUsuario);
+
+                    const respuesta = await fetch(
+                        url,
+                        {
+                            method: "GET",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        });
+
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            "No fue posible cargar la información del usuario.");
+                    }
+
+                    contenidoModal.innerHTML =
+                        await respuesta.text();
+
+                    inicializarFormularioAjax();
+
+                } catch (error) {
+
+                    contenidoModal.innerHTML =
+                        crearContenidoError(error.message);
+                }
+            }
+
+            function inicializarFormularioAjax() {
+
+                const formulario =
+                    contenidoModal.querySelector("form");
+
+                if (!formulario) {
+                    return;
+                }
+
+                reinicializarValidacion(formulario);
+
+                formulario.addEventListener(
+                    "submit",
+                    async function(event) {
+
+                        event.preventDefault();
+
+                        if (
+                            window.jQuery &&
+                            !$(formulario).valid()
+                        ) {
+                            return;
+                        }
+
+                        const botonEnviar =
+                            formulario.querySelector(
+                                'button[type="submit"]');
+
+                        const textoOriginal =
+                            botonEnviar
+                                ? botonEnviar.innerHTML
+                                : "";
+
+                        if (botonEnviar) {
+
+                            botonEnviar.disabled = true;
+
+                            botonEnviar.innerHTML =
+                                '<span class="spinner-border spinner-border-sm me-2"></span>'
+                                + "Guardando...";
+                        }
+
+                        try {
+
+                            const respuesta = await fetch(
+                                formulario.action,
+                                {
+                                    method: "POST",
+                                    body: new FormData(formulario),
+                                    headers: {
+                                        "X-Requested-With": "XMLHttpRequest"
+                                    }
+                                });
+
+                            const tipoContenido =
+                                respuesta.headers.get(
+                                    "content-type") || "";
+
+                            if (
+                                tipoContenido.includes(
+                                    "application/json")
+                            ) {
+                                const resultado =
+                                    await respuesta.json();
+
+                                if (resultado.exitoso) {
+
+                                    modalUsuario.hide();
+
+                                    await Swal.fire({
+                                        icon: "success",
+                                        title: "Proceso completado",
+                                        text: resultado.mensaje,
+                                        confirmButtonText: "Aceptar"
+                                    });
+
+                                    window.location.href =
+                                        "@Url.Action("Index", "UsuarioBiblioteca")";
+
+                                    return;
+                                }
+                            }
+
+                            contenidoModal.innerHTML =
+                                await respuesta.text();
+
+                            inicializarFormularioAjax();
+
+                        } catch (error) {
+
+                            await Swal.fire({
+                                icon: "error",
+                                title: "No fue posible guardar",
+                                text:
+                                    "Ocurrió un error al procesar la solicitud.",
+                                confirmButtonText: "Aceptar"
+                            });
+
+                        } finally {
+
+                            const nuevoBotonEnviar =
+                                formulario.querySelector(
+                                    'button[type="submit"]');
+
+                            if (nuevoBotonEnviar) {
+
+                                nuevoBotonEnviar.disabled =
+                                    false;
+
+                                nuevoBotonEnviar.innerHTML =
+                                    textoOriginal;
+                            }
+                        }
+                    });
+            }
+
+            function reinicializarValidacion(formulario) {
+
+                if (!window.jQuery) {
+                    return;
+                }
+
+                const formularioJQuery =
+                    $(formulario);
+
+                formularioJQuery
+                    .removeData("validator");
+
+                formularioJQuery
+                    .removeData("unobtrusiveValidation");
+
+                $.validator
+                    .unobtrusive
+                    .parse(formulario);
+            }
+
+            function crearContenidoCargando() {
+
+                return `
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary"
+                                     role="status">
+                                    <span class="visually-hidden">
+                                        Cargando...
+                                    </span>
+                                </div>
+
+                                <p class="text-muted mt-3 mb-0">
+                                    Cargando formulario...
+                                </p>
+                            </div>
+                        `;
+            }
+
+            function crearContenidoError(mensaje) {
+
+                return `
+                            <div class="alert alert-danger mb-0">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                ${mensaje}
+                            </div>
+                        `;
+            }
+
+            if (btnAbrirCrearUsuario) {
+
+                btnAbrirCrearUsuario.addEventListener(
+                    "click",
+                    abrirModalCrear);
+            }
+
+            if (btnCrearUsuarioEstadoVacio) {
+
+                btnCrearUsuarioEstadoVacio.addEventListener(
+                    "click",
+                    abrirModalCrear);
+            }
+
+            document
+                .querySelectorAll(".btn-editar-usuario")
+                .forEach(function(boton) {
+
+                    boton.addEventListener(
+                        "click",
+                        function() {
+
+                            abrirModalEditar(
+                                boton.dataset.id);
+                        });
+                });
+
+            document
+                .querySelectorAll(".formulario-cambiar-estado")
+                .forEach(function(formulario) {
+
+                    formulario.addEventListener(
+                        "submit",
+                        async function(event) {
+
+                            event.preventDefault();
+
+                            const nombre =
+                                formulario.dataset.nombre;
+
+                            const accion =
+                                formulario.dataset.accion;
+
+                            const resultado =
+                                await Swal.fire({
+                                    icon: "question",
+                                    title:
+                                        accion === "activar"
+                                            ? "¿Activar usuario?"
+                                            : "¿Desactivar usuario?",
+
+                                    text:
+                                        `¿Está seguro de que desea ${accion} a ${nombre}?`,
+
+                                    showCancelButton: true,
+                                    confirmButtonText:
+                                        accion === "activar"
+                                            ? "Sí, activar"
+                                            : "Sí, desactivar",
+
+                                    cancelButtonText: "Cancelar",
+                                    reverseButtons: true
+                                });
+
+                            if (resultado.isConfirmed) {
+                                formulario.submit();
+                            }
+                        });
+                });
+
+            modalElemento.addEventListener(
+                "hidden.bs.modal",
+                function() {
+
+                    contenidoModal.innerHTML = "";
+                });
+        });
+    </script>
+}
