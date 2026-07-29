@@ -26,9 +26,4 @@ public class EjemplarCreateDto
     [Required(ErrorMessage = "Seleccione el estado del ejemplar.")]
     public EstadoEjemplar Estado { get; set; }
         = EstadoEjemplar.Disponible;
-
-    [StringLength(
-        250,
-        ErrorMessage = "El nombre de la biblioteca no puede superar los 250 caracteres.")]
-    public string? Biblioteca { get; set; }
 }

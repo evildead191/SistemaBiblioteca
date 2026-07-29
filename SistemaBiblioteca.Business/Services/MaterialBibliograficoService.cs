@@ -39,6 +39,10 @@ public class MaterialBibliograficoService
             : MapearADto(material);
     }
 
+    public async Task<int> ContarAsync()
+    {
+        return await _repository.ContarAsync();
+    }
     public async Task<MaterialBibliograficoEditDto?> ObtenerParaEditarAsync(
         int id)
     {

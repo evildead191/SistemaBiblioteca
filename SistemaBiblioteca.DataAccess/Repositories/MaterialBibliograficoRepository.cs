@@ -60,6 +60,12 @@ public class MaterialBibliograficoRepository
                 x.IdMaterialBibliografico == id);
     }
 
+    public async Task<int> ContarAsync()
+    {
+        return await _context.MaterialesBibliograficos
+            .CountAsync();
+    }
+
     public async Task<bool> ExisteNumeroFichaAsync(
         string numeroFicha,
         int? idExcluir = null)

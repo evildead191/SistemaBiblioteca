@@ -1,0 +1,148 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Ejemplar.EjemplarEditViewModel
+
+<form asp-controller="Ejemplar"
+      asp-action="Editar"
+      method="post"
+      autocomplete="off">
+
+    @Html.AntiForgeryToken()
+
+    <input asp-for="Ejemplar.IdEjemplar"
+           type="hidden" />
+
+    <input asp-for="Ejemplar.Activo"
+           type="hidden" />
+
+    <div class="modal-body">
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"
+             role="alert">
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-12 col-md-6">
+
+                <label asp-for="Ejemplar.CodigoBarras"
+                       class="form-label">
+                    Código de barras
+                    <span class="text-danger">*</span>
+                </label>
+
+                <input asp-for="Ejemplar.CodigoBarras"
+                       class="form-control"
+                       placeholder="Ejemplo: EJ-0001" />
+
+                <span asp-validation-for="Ejemplar.CodigoBarras"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                <label asp-for="Ejemplar.NumeroInscripcion"
+                       class="form-label">
+                    Número de inscripción
+                </label>
+
+                <input asp-for="Ejemplar.NumeroInscripcion"
+                       class="form-control"
+                       placeholder="Número de inscripción" />
+
+                <span asp-validation-for="Ejemplar.NumeroInscripcion"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="col-12">
+
+                <label asp-for="Ejemplar.IdMaterialBibliografico"
+                       class="form-label">
+                    Material bibliográfico
+                    <span class="text-danger">*</span>
+                </label>
+
+                <select asp-for="Ejemplar.IdMaterialBibliografico"
+                        asp-items="Model.MaterialesBibliograficos"
+                        class="form-select">
+
+                    <option value="">
+                        Seleccione un material bibliográfico
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="Ejemplar.IdMaterialBibliografico"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                <label asp-for="Ejemplar.Estado"
+                       class="form-label">
+                    Estado del ejemplar
+                    <span class="text-danger">*</span>
+                </label>
+
+                <select asp-for="Ejemplar.Estado"
+                        asp-items="Model.Estados"
+                        class="form-select">
+                </select>
+
+                <span asp-validation-for="Ejemplar.Estado"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                <label asp-for="Ejemplar.Biblioteca"
+                       class="form-label">
+                    Biblioteca
+                </label>
+
+                <input class="form-control"
+                       value="Escuela Reverendo Francisco Schmitz"
+                       readonly />
+
+                <span asp-validation-for="Ejemplar.Biblioteca"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+        </div>
+
+        <p class="small text-muted mt-3 mb-0">
+            Los campos marcados con
+            <span class="text-danger">*</span>
+            son obligatorios.
+        </p>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">
+
+            Cancelar
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            <i class="bi bi-floppy me-1"></i>
+            Guardar cambios
+        </button>
+
+    </div>
+
+</form>

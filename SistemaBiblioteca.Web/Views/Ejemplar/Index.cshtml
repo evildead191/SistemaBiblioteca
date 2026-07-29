@@ -1,0 +1,723 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Ejemplar.EjemplarIndexViewModel
+
+@using SistemaBiblioteca.Entities.Enums
+
+@{
+    ViewData["Title"] = "Ejemplares";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex flex-column flex-md-row
+        justify-content-between align-items-md-center
+        gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 mb-1">Ejemplares</h1>
+
+            <p class="text-muted mb-0">
+                Consulte y administre los ejemplares registrados.
+            </p>
+        </div>
+
+        <button type="button"
+                class="btn btn-primary"
+                id="btnAbrirCrearEjemplar">
+
+            <i class="bi bi-plus-circle me-1"></i>
+            Registrar ejemplar
+        </button>
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <form asp-controller="Ejemplar"
+                  asp-action="Index"
+                  method="get"
+                  class="row g-2 mb-4">
+
+                <div class="col-12 col-md-8 col-lg-6">
+
+                    <label asp-for="Busqueda"
+                           class="visually-hidden">
+                        Buscar
+                    </label>
+
+                    <input asp-for="Busqueda"
+                           class="form-control"
+                           placeholder="Buscar por código, inscripción, biblioteca o material" />
+                </div>
+
+                <div class="col-auto">
+
+                    <button type="submit"
+                            class="btn btn-outline-primary">
+
+                        <i class="bi bi-search me-1"></i>
+                        Buscar
+                    </button>
+                </div>
+
+                <div class="col-auto">
+
+                    <a asp-controller="Ejemplar"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            @if (Model.Ejemplares.Count == 0)
+            {
+                <div class="text-center py-5">
+
+                    <i class="bi bi-journal-x
+                        display-5 text-muted">
+                    </i>
+
+                    <h2 class="h5 mt-3">
+                        No se encontraron ejemplares
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        No existen registros que coincidan con la búsqueda.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover
+                        align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>Código de barras</th>
+                                <th>Material bibliográfico</th>
+                                <th>N.º de inscripción</th>
+                                <th>Biblioteca</th>
+                                <th>Estado del ejemplar</th>
+                                <th>Registro</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var ejemplar in Model.Ejemplares)
+                            {
+                                string estadoTexto =
+                                    ejemplar.Estado switch
+                                    {
+                                        EstadoEjemplar.Disponible =>
+                                            "Disponible",
+
+                                        EstadoEjemplar.Prestado =>
+                                            "Prestado",
+
+                                        EstadoEjemplar.Mantenimiento =>
+                                            "Mantenimiento",
+
+                                        EstadoEjemplar.FueraDeServicio =>
+                                            "Fuera de servicio",
+
+                                        _ => ejemplar.Estado.ToString()
+                                    };
+
+                                string estadoClase =
+                                    ejemplar.Estado switch
+                                    {
+                                        EstadoEjemplar.Disponible =>
+                                            "bg-success",
+
+                                        EstadoEjemplar.Prestado =>
+                                            "bg-primary",
+
+                                        EstadoEjemplar.Mantenimiento =>
+                                            "bg-warning text-dark",
+
+                                        EstadoEjemplar.FueraDeServicio =>
+                                            "bg-danger",
+
+                                        _ => "bg-secondary"
+                                    };
+
+                                <tr>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @ejemplar.CodigoBarras
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @ejemplar.MaterialBibliografico
+                                    </td>
+
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(
+                                            ejemplar.NumeroInscripcion))
+                                        {
+                                            <span class="text-muted">
+                                                No registrado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @ejemplar.NumeroInscripcion
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(
+                                            ejemplar.Biblioteca))
+                                        {
+                                            <span class="text-muted">
+                                                No indicada
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @ejemplar.Biblioteca
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <span class="badge @estadoClase">
+                                            @estadoTexto
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @if (ejemplar.Activo)
+                                        {
+                                            <span class="badge
+                                                bg-success-subtle
+                                                text-success
+                                                border
+                                                border-success-subtle">
+                                                Activo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge
+                                                bg-danger-subtle
+                                                text-danger
+                                                border
+                                                border-danger-subtle">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <div class="d-inline-flex gap-2">
+
+                                            <button type="button"
+                                                    class="btn btn-sm
+                                                btn-outline-primary
+                                                btn-editar-ejemplar"
+                                                    data-id="@ejemplar.IdEjemplar">
+
+                                                <i class="bi bi-pencil-square">
+                                                </i>
+
+                                                Editar
+                                            </button>
+
+                                            <form asp-controller="Ejemplar"
+                                                  asp-action="CambiarEstado"
+                                                  method="post"
+                                                  class="d-inline
+                                                form-cambiar-estado"
+                                                  data-accion="@(ejemplar.Activo
+                                                                                                      ? "desactivar"
+                                                                                                      : "activar")"
+                                                  data-titulo="@ejemplar.CodigoBarras">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@ejemplar.IdEjemplar" />
+
+                                                @if (ejemplar.Activo)
+                                                {
+                                                    <button type="submit"
+                                                            class="btn btn-sm
+                                                        btn-outline-danger">
+
+                                                        <i class="bi
+                                                            bi-toggle-off">
+                                                        </i>
+
+                                                        Desactivar
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit"
+                                                            class="btn btn-sm
+                                                        btn-outline-success">
+
+                                                        <i class="bi
+                                                            bi-toggle-on">
+                                                        </i>
+
+                                                        Activar
+                                                    </button>
+                                                }
+
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade"
+     id="modalEjemplar"
+     tabindex="-1"
+     aria-labelledby="tituloModalEjemplar"
+     aria-hidden="true">
+
+    <div class="modal-dialog
+        modal-lg
+        modal-dialog-centered
+        modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 class="modal-title fs-5"
+                    id="tituloModalEjemplar">
+                    Ejemplar
+                </h2>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+
+            </div>
+
+            <div id="contenidoModalEjemplar">
+
+                <div class="modal-body text-center py-5">
+
+                    <div class="spinner-border text-primary"
+                         role="status">
+
+                        <span class="visually-hidden">
+                            Cargando...
+                        </span>
+
+                    </div>
+
+                    <p class="text-muted mt-3 mb-0">
+                        Cargando información...
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const modalElemento =
+                document.getElementById("modalEjemplar");
+
+            const modalEjemplar =
+                new bootstrap.Modal(modalElemento);
+
+            const tituloModal =
+                document.getElementById("tituloModalEjemplar");
+
+            const contenidoModal =
+                document.getElementById("contenidoModalEjemplar");
+
+            const botonCrear =
+                document.getElementById(
+                    "btnAbrirCrearEjemplar"
+                );
+
+            botonCrear.addEventListener(
+                "click",
+                async function () {
+
+                    tituloModal.textContent =
+                        "Registrar ejemplar";
+
+                    await cargarModal(
+                        "@Url.Action("CrearModal", "Ejemplar")"
+                    );
+                }
+            );
+
+            document.addEventListener(
+                "click",
+                async function (evento) {
+
+                    const botonEditar =
+                        evento.target.closest(
+                            ".btn-editar-ejemplar"
+                        );
+
+                    if (!botonEditar) {
+                        return;
+                    }
+
+                    const id =
+                        botonEditar.dataset.id;
+
+                    tituloModal.textContent =
+                        "Editar ejemplar";
+
+                    await cargarModal(
+                        `@Url.Action("EditarModal", "Ejemplar")?id=${id}`
+                    );
+                }
+            );
+
+            contenidoModal.addEventListener(
+                "submit",
+                async function (evento) {
+
+                    const formulario =
+                        evento.target.closest("form");
+
+                    if (!formulario) {
+                        return;
+                    }
+
+                    evento.preventDefault();
+
+                    if (
+                        window.jQuery &&
+                        !$(formulario).valid()
+                    ) {
+                        return;
+                    }
+
+                    const botonSubmit =
+                        formulario.querySelector(
+                            'button[type="submit"]'
+                        );
+
+                    const textoOriginal =
+                        botonSubmit?.innerHTML;
+
+                    if (botonSubmit) {
+                        botonSubmit.disabled = true;
+
+                        botonSubmit.innerHTML =
+                            `<span class="spinner-border
+                                           spinner-border-sm
+                                           me-1"
+                                   aria-hidden="true">
+                             </span>
+                             Guardando...`;
+                    }
+
+                    try {
+
+                        const respuesta =
+                            await fetch(
+                                formulario.action,
+                                {
+                                    method: "POST",
+                                    body: new FormData(formulario),
+                                    headers: {
+                                        "X-Requested-With":
+                                            "XMLHttpRequest"
+                                    }
+                                }
+                            );
+
+                        const tipoContenido =
+                            respuesta.headers.get(
+                                "content-type"
+                            ) ?? "";
+
+                        if (
+                            tipoContenido.includes(
+                                "application/json"
+                            )
+                        ) {
+                            const resultado =
+                                await respuesta.json();
+
+                            if (resultado.exitoso) {
+
+                                modalEjemplar.hide();
+
+                                await Swal.fire({
+                                    icon: "success",
+                                    title: "Proceso completado",
+                                    text: resultado.mensaje,
+                                    confirmButtonText: "Aceptar",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                });
+
+                                window.location.href =
+                                    "@Url.Action("Index", "Ejemplar")";
+
+                                return;
+                            }
+                        }
+
+                        contenidoModal.innerHTML =
+                            await respuesta.text();
+
+                        inicializarValidacion();
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "No fue posible guardar",
+                            text: "Ocurrió un error al procesar la solicitud.",
+                            confirmButtonText: "Aceptar"
+                        });
+
+                    } finally {
+
+                        const nuevoBoton =
+                            contenidoModal.querySelector(
+                                'button[type="submit"]'
+                            );
+
+                        if (
+                            botonSubmit &&
+                            botonSubmit.isConnected
+                        ) {
+                            botonSubmit.disabled = false;
+
+                            botonSubmit.innerHTML =
+                                textoOriginal;
+                        }
+                        else if (nuevoBoton) {
+                            nuevoBoton.disabled = false;
+                        }
+                    }
+                }
+            );
+
+            document
+                .querySelectorAll(
+                    ".form-cambiar-estado"
+                )
+                .forEach(function (formulario) {
+
+                    formulario.addEventListener(
+                        "submit",
+                        async function (evento) {
+
+                            evento.preventDefault();
+
+                            const accion =
+                                formulario.dataset.accion;
+
+                            const codigo =
+                                formulario.dataset.titulo;
+
+                            const resultado =
+                                await Swal.fire({
+                                    icon: "warning",
+                                    title:
+                                        `¿Desea ${accion} este ejemplar?`,
+
+                                    text:
+                                        `Código de barras: ${codigo}`,
+
+                                    showCancelButton: true,
+                                    confirmButtonText:
+                                        `Sí, ${accion}`,
+
+                                    cancelButtonText:
+                                        "Cancelar",
+
+                                    reverseButtons: true
+                                });
+
+                            if (resultado.isConfirmed) {
+                                formulario.submit();
+                            }
+                        }
+                    );
+                });
+
+            async function cargarModal(url) {
+
+                mostrarCargando();
+                modalEjemplar.show();
+
+                try {
+
+                    const respuesta =
+                        await fetch(url, {
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            }
+                        });
+
+                    if (!respuesta.ok) {
+                        throw new Error(
+                            "No fue posible cargar el formulario."
+                        );
+                    }
+
+                    contenidoModal.innerHTML =
+                        await respuesta.text();
+
+                    inicializarValidacion();
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    modalEjemplar.hide();
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "No fue posible cargar",
+                        text: "Ocurrió un error al cargar el formulario.",
+                        confirmButtonText: "Aceptar"
+                    });
+                }
+            }
+
+            function mostrarCargando() {
+
+                contenidoModal.innerHTML = `
+                    <div class="modal-body
+                                text-center
+                                py-5">
+
+                        <div class="spinner-border
+                                    text-primary"
+                             role="status">
+
+                            <span class="visually-hidden">
+                                Cargando...
+                            </span>
+
+                        </div>
+
+                        <p class="text-muted
+                                  mt-3
+                                  mb-0">
+                            Cargando información...
+                        </p>
+
+                    </div>`;
+            }
+
+            function inicializarValidacion() {
+
+                if (!window.jQuery) {
+                    return;
+                }
+
+                const formulario =
+                    contenidoModal.querySelector("form");
+
+                if (!formulario) {
+                    return;
+                }
+
+                $(formulario)
+                    .removeData("validator")
+                    .removeData(
+                        "unobtrusiveValidation"
+                    );
+
+                $.validator
+                    .unobtrusive
+                    .parse(formulario);
+            }
+
+            modalElemento.addEventListener(
+                "hidden.bs.modal",
+                function () {
+
+                    contenidoModal.innerHTML = "";
+                }
+            );
+        });
+    </script>
+
+    @if (TempData["MensajeExito"] is string mensajeExito)
+    {
+        <script>
+            Swal.fire({
+                icon: "success",
+                title: "Proceso completado",
+                text: @Html.Raw(
+                                System.Text.Json.JsonSerializer.Serialize(
+                                        mensajeExito
+                                )
+                        ),
+                confirmButtonText: "Aceptar"
+            });
+        </script>
+    }
+
+    @if (TempData["MensajeError"] is string mensajeError)
+    {
+        <script>
+            Swal.fire({
+                icon: "error",
+                title: "No fue posible completar el proceso",
+                text: @Html.Raw(
+                                System.Text.Json.JsonSerializer.Serialize(
+                                        mensajeError
+                                )
+                        ),
+                confirmButtonText: "Aceptar"
+            });
+        </script>
+    }
+}

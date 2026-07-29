@@ -1,4 +1,5 @@
-﻿using SistemaBiblioteca.Entities.Models;
+﻿using SistemaBiblioteca.Entities.Enums;
+using SistemaBiblioteca.Entities.Models;
 
 namespace SistemaBiblioteca.DataAccess.Repositories;
 
@@ -21,4 +22,9 @@ public interface IEjemplarRepository
     void Actualizar(Ejemplar ejemplar);
 
     Task GuardarCambiosAsync();
+
+    Task<int> ContarAsync();
+
+    Task<int> ContarPorEstadoAsync(
+        EstadoEjemplar estado);
 }

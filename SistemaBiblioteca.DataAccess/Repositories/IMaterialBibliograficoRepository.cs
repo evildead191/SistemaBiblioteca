@@ -18,4 +18,6 @@ public interface IMaterialBibliograficoRepository
     void Actualizar(MaterialBibliografico material);
 
     Task GuardarCambiosAsync();
+
+    Task<int> ContarAsync();
 }

@@ -18,4 +18,6 @@ public interface IMaterialBibliograficoService
         MaterialBibliograficoEditDto dto);
 
     Task<(bool Exitoso, string Mensaje)> CambiarEstadoAsync(int id);
+
+    Task<int> ContarAsync();
 }

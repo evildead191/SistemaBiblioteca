@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SistemaBiblioteca.DataAccess.Context;
+using SistemaBiblioteca.Entities.Enums;
 using SistemaBiblioteca.Entities.Models;
 
 namespace SistemaBiblioteca.DataAccess.Repositories;
@@ -73,6 +74,21 @@ public class EjemplarRepository : IEjemplarRepository
     public async Task AgregarAsync(Ejemplar ejemplar)
     {
         await _context.Ejemplares.AddAsync(ejemplar);
+    }
+
+    public async Task<int> ContarAsync()
+    {
+        return await _context.Ejemplares
+            .CountAsync();
+    }
+
+    public async Task<int> ContarPorEstadoAsync(
+        EstadoEjemplar estado)
+    {
+        return await _context.Ejemplares
+            .CountAsync(x =>
+                x.Activo &&
+                x.Estado == estado);
     }
 
     public void Actualizar(Ejemplar ejemplar)

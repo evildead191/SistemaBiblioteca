@@ -14,13 +14,10 @@ var connectionString = builder.Configuration
 builder.Services.AddDbContext<SistemaBibliotecaDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<
-    IMaterialBibliograficoRepository,
-    MaterialBibliograficoRepository>();
-
-builder.Services.AddScoped<
-    IMaterialBibliograficoService,
-    MaterialBibliograficoService>();
+builder.Services.AddScoped<IMaterialBibliograficoRepository, MaterialBibliograficoRepository>();
+builder.Services.AddScoped<IMaterialBibliograficoService, MaterialBibliograficoService>();
+builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
+builder.Services.AddScoped<IEjemplarService, EjemplarService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
