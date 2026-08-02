@@ -1,17 +1,54 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SistemaBiblioteca.web</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Sistema Bibliotecario
+    </title>
+
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SistemaBiblioteca.web.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/SistemaBiblioteca.web.styles.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
+
 <body>
+
+    @{
+        string controladorActual =
+            ViewContext.RouteData.Values["controller"]?
+                .ToString()
+            ?? string.Empty;
+
+        string ObtenerClaseActiva(
+            params string[] controladores)
+        {
+            return controladores.Any(
+                controlador =>
+                    controlador.Equals(
+                        controladorActual,
+                        StringComparison.OrdinalIgnoreCase))
+                ? "active"
+                : string.Empty;
+        }
+    }
+
     <header class="main-header">
+
         <nav class="navbar navbar-expand-lg navbar-dark biblioteca-navbar">
             <div class="container">
 
@@ -24,6 +61,7 @@
                          class="biblioteca-logo" />
 
                     <span class="brand-text">
+
                         <span class="brand-title">
                             Sistema Bibliotecario
                         </span>
@@ -31,6 +69,7 @@
                         <span class="brand-subtitle">
                             Escuela Reverendo Francisco Schmitz
                         </span>
+
                     </span>
                 </a>
 
@@ -51,7 +90,8 @@
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
 
                         <li class="nav-item">
-                            <a class="nav-link biblioteca-nav-link"
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("Home")"
                                asp-controller="Home"
                                asp-action="Index">
 
@@ -61,7 +101,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link biblioteca-nav-link"
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("MaterialBibliografico")"
                                asp-controller="MaterialBibliografico"
                                asp-action="Index">
 
@@ -71,7 +112,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link biblioteca-nav-link"
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("Ejemplar")"
                                asp-controller="Ejemplar"
                                asp-action="Index">
 
@@ -80,29 +122,58 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("UsuarioBiblioteca")"
+                               asp-controller="UsuarioBiblioteca"
+                               asp-action="Index">
+
+                                <i class="bi bi-people me-1"></i>
+                                Usuarios
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("Prestamo")"
+                               asp-controller="Prestamo"
+                               asp-action="Index">
+
+                                <i class="bi bi-arrow-left-right me-1"></i>
+                                Préstamos
+                            </a>
+                        </li>
+
                     </ul>
 
                 </div>
-
             </div>
         </nav>
 
         <div class="navbar-accent-line"></div>
     </header>
-    <main role="main" class="main-content">
+
+    <main role="main"
+          class="main-content">
+
         @RenderBody()
+
     </main>
 
     <footer class="biblioteca-footer">
+
         <div class="container">
+
             <div class="footer-content">
 
                 <div class="footer-brand">
+
                     <img src="~/images/logo-sistema-bibliotecario.png"
-                         alt=""
+                         alt="Logo del Sistema Bibliotecario"
                          class="footer-logo" />
 
                     <div>
+
                         <div class="footer-title">
                             Sistema Bibliotecario
                         </div>
@@ -110,6 +181,7 @@
                         <div class="footer-school">
                             Escuela Reverendo Francisco Schmitz
                         </div>
+
                     </div>
                 </div>
 
@@ -120,10 +192,20 @@
             </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="~/js/site.js"
+            asp-append-version="true">
+    </script>
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false)
+
 </body>
 </html>

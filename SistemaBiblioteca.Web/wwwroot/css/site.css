@@ -1137,3 +1137,101 @@ a.dashboard-action-card:hover {
     background: rgba(var(--bs-primary-rgb), 0.12);
     border: 1px solid rgba(var(--bs-primary-rgb), 0.18);
 }
+
+.biblioteca-nav-link {
+    border-radius: 0.5rem;
+    padding: 0.55rem 0.8rem !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .biblioteca-nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .biblioteca-nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+
+.main-content {
+    min-height: calc(100vh - 190px);
+}
+
+/* =========================================================
+   ACCIONES DE PRÉSTAMOS
+   ========================================================= */
+
+.prestamo-acciones {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+}
+
+    .prestamo-acciones .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 82px;
+        white-space: nowrap;
+    }
+
+.btn-outline-info {
+    color: #315f91;
+    border-color: #7da2cf;
+}
+
+    .btn-outline-info:hover,
+    .btn-outline-info:focus {
+        color: #ffffff;
+        background-color: #315f91;
+        border-color: #315f91;
+    }
+
+.btn-outline-success {
+    color: var(--biblioteca-verde-oscuro);
+    border-color: var(--biblioteca-verde);
+}
+
+    .btn-outline-success:hover,
+    .btn-outline-success:focus {
+        color: #ffffff;
+        background-color: var(--biblioteca-verde-oscuro);
+        border-color: var(--biblioteca-verde-oscuro);
+    }
+
+.swal2-popup {
+    border-radius: 18px;
+}
+
+.swal2-title {
+    color: var(--biblioteca-azul-oscuro);
+}
+
+.swal2-confirm,
+.swal2-cancel {
+    border-radius: 9px !important;
+    font-weight: 600 !important;
+}
+
+@media (max-width: 767.98px) {
+    .prestamo-acciones {
+        flex-direction: column;
+        width: 100%;
+    }
+
+        .prestamo-acciones .btn {
+            width: 100%;
+        }
+}
+
+.reporte-card {
+    transition: .25s;
+    border-radius: 16px;
+}
+
+    .reporte-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0,0,0,.12) !important;
+    }

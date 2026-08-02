@@ -1,0 +1,336 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Reporte.ReportePrestamoViewModel
+
+@{
+    ViewData["Title"] = "Reporte de Préstamos";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-arrow-left-right me-2"></i>
+                Reporte de Préstamos
+            </h2>
+
+            <p class="text-muted mb-0">
+                Consulte el historial de préstamos registrados.
+            </p>
+
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Volver
+
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-3">
+
+                    <div class="col-lg-4">
+
+                        <label class="form-label">
+
+                            Buscar
+
+                        </label>
+
+                        <input asp-for="Filtro.Busqueda"
+                               class="form-control"
+                               placeholder="Usuario, libro o código..." />
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+
+                            Estado
+
+                        </label>
+
+                        <select asp-for="Filtro.Estado"
+                                asp-items="Model.EstadosPrestamo"
+                                class="form-select">
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+
+                            Fecha inicial
+
+                        </label>
+
+                        <input asp-for="Filtro.FechaInicial"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+
+                            Fecha final
+
+                        </label>
+
+                        <input asp-for="Filtro.FechaFinal"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+
+                            Atrasados
+
+                        </label>
+
+                        <div class="form-check mt-2">
+
+                            <input asp-for="Filtro.SoloAtrasados"
+                                   class="form-check-input" />
+
+                            <label class="form-check-label"
+                                   asp-for="Filtro.SoloAtrasados">
+
+                                Solo atrasados
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+
+                    <button class="btn btn-primary">
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                    <a asp-action="Prestamos"
+                       class="btn btn-outline-secondary">
+
+                        Limpiar
+
+                    </a>
+
+                    <button class="btn btn-success ms-auto"
+                            disabled>
+
+                        <i class="bi bi-file-earmark-excel me-1"></i>
+
+                        Exportar Excel
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col">
+
+            <div class="dashboard-card">
+
+                <h3>@Model.TotalResultados</h3>
+
+                <span>Total</span>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="dashboard-card">
+
+                <h3>@Model.PrestamosActivos</h3>
+
+                <span>Activos</span>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="dashboard-card">
+
+                <h3>@Model.PrestamosDevueltos</h3>
+
+                <span>Devueltos</span>
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <div class="dashboard-card">
+
+                <h3>@Model.PrestamosAtrasados</h3>
+
+                <span>Atrasados</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Usuario</th>
+
+                        <th>Libro</th>
+
+                        <th>Código</th>
+
+                        <th>Préstamo</th>
+
+                        <th>Devolución</th>
+
+                        <th>Estado</th>
+
+                        <th>Días</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var prestamo in Model.Prestamos)
+                    {
+
+                        <tr>
+
+                            <td>
+
+                                <strong>
+
+                                    @prestamo.NombreUsuario
+
+                                </strong>
+
+                                <br />
+
+                                <small class="text-muted">
+
+                                    @prestamo.IdentificacionUsuario
+
+                                </small>
+
+                            </td>
+
+                            <td>
+
+                                @prestamo.TituloMaterial
+
+                                <br />
+
+                                <small class="text-muted">
+
+                                    @prestamo.AutorMaterial
+
+                                </small>
+
+                            </td>
+
+                            <td>
+
+                                @prestamo.CodigoBarras
+
+                            </td>
+
+                            <td>
+
+                                @prestamo.FechaPrestamo.ToString("dd/MM/yyyy")
+
+                            </td>
+
+                            <td>
+
+                                @prestamo.FechaLimiteDevolucion.ToString("dd/MM/yyyy")
+
+                            </td>
+
+                            <td>
+
+                                @if (prestamo.EstaAtrasado)
+                                {
+                                    <span class="badge bg-danger">
+
+                                        Atrasado
+
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+
+                                        @prestamo.Estado
+
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+
+                                @prestamo.DiasPrestado
+
+                            </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

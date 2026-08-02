@@ -20,6 +20,10 @@ builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
 builder.Services.AddScoped<IEjemplarService, EjemplarService>();
 builder.Services.AddScoped<IUsuarioBibliotecaRepository, UsuarioBibliotecaRepository>();
 builder.Services.AddScoped<IUsuarioBibliotecaService, UsuarioBibliotecaService>();
+builder.Services.AddScoped<IPrestamoRepository, PrestamoRepository>();
+builder.Services.AddScoped<IPrestamoService, PrestamoService>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

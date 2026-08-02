@@ -142,10 +142,6 @@ public class EjemplarService : IEjemplarService
             LimpiarTextoOpcional(
                 dto.NumeroInscripcion);
 
-        string? biblioteca =
-            LimpiarTextoOpcional(
-                dto.Biblioteca);
-
         bool codigoExistente =
             await _repository.ExisteCodigoBarrasAsync(
                 codigoBarras,
@@ -177,7 +173,6 @@ public class EjemplarService : IEjemplarService
             ejemplar.IdMaterialBibliografico !=
                 dto.IdMaterialBibliografico ||
             ejemplar.Estado != dto.Estado ||
-            ejemplar.Biblioteca != biblioteca ||
             ejemplar.Activo != dto.Activo;
 
         if (!huboCambios)
@@ -195,7 +190,6 @@ public class EjemplarService : IEjemplarService
             dto.IdMaterialBibliografico;
 
         ejemplar.Estado = dto.Estado;
-        ejemplar.Biblioteca = biblioteca;
         ejemplar.Activo = dto.Activo;
 
         _repository.Actualizar(ejemplar);

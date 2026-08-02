@@ -13,15 +13,29 @@ public class HomeController : Controller
     private readonly IEjemplarService
         _ejemplarService;
 
+    private readonly IUsuarioBibliotecaService
+        _usuarioBibliotecaService;
+
+    private readonly IPrestamoService
+        _prestamoService;
+
     public HomeController(
-        IMaterialBibliograficoService materialBibliograficoService,
-        IEjemplarService ejemplarService)
+    IMaterialBibliograficoService materialBibliograficoService,
+    IEjemplarService ejemplarService,
+    IUsuarioBibliotecaService usuarioBibliotecaService,
+    IPrestamoService prestamoService)
     {
         _materialBibliograficoService =
             materialBibliograficoService;
 
         _ejemplarService =
             ejemplarService;
+
+        _usuarioBibliotecaService =
+            usuarioBibliotecaService;
+
+        _prestamoService =
+            prestamoService;
     }
 
     [HttpGet]
@@ -41,6 +55,18 @@ public class HomeController : Controller
             await _ejemplarService.ContarPorEstadoAsync(
                 EstadoEjemplar.Prestado);
 
+        int personasRegistradas =
+            await _usuarioBibliotecaService
+                .ContarUsuariosActivosAsync();
+
+        int prestamosActivos =
+            await _prestamoService
+                .ContarPrestamosActivosAsync();
+
+        int prestamosAtrasados =
+            await _prestamoService
+                .ContarPrestamosAtrasadosAsync();
+
         DashboardViewModel viewModel = new()
         {
             TotalMateriales = totalMateriales,
@@ -53,10 +79,17 @@ public class HomeController : Controller
             EjemplaresPrestados =
                 ejemplaresPrestados,
 
-            PrestamosActivos = 0,
-            PrestamosVencidos = 0,
-            PersonasRegistradas = 0,
-            DevolucionesPendientes = 0
+            PersonasRegistradas =
+                personasRegistradas,
+
+            PrestamosActivos =
+                prestamosActivos,
+
+            PrestamosVencidos =
+                prestamosAtrasados,
+
+            DevolucionesPendientes =
+                prestamosActivos
         };
 
         return View(viewModel);

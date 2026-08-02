@@ -1,0 +1,540 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Prestamo.PrestamoIndexViewModel
+
+@using SistemaBiblioteca.Entities.Enums
+
+@{
+    ViewData["Title"] = "Préstamos";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h2 class="mb-1">Gestión de préstamos</h2>
+            <p class="text-muted mb-0">
+                Registre préstamos, consulte su estado y procese devoluciones.
+            </p>
+        </div>
+
+        <button type="button"
+                class="btn btn-primary"
+                id="btnAbrirCrearPrestamo">
+            <i class="bi bi-plus-circle me-1"></i>
+            Registrar préstamo
+        </button>
+    </div>
+
+    @if (TempData["MensajeExito"] is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    @if (TempData["MensajeError"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["MensajeError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="get"
+                  asp-controller="Prestamo"
+                  asp-action="Index">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-12 col-lg-5">
+                        <label asp-for="Busqueda"
+                               class="form-label">
+                            Buscar
+                        </label>
+
+                        <input asp-for="Busqueda"
+                               class="form-control"
+                               placeholder="Usuario, identificación, ejemplar, título o autor" />
+                    </div>
+
+                    <div class="col-12 col-md-5 col-lg-3">
+                        <label asp-for="Estado"
+                               class="form-label">
+                            Estado
+                        </label>
+
+                        <select asp-for="Estado"
+                                asp-items="Model.Estados"
+                                class="form-select">
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="form-check mb-2">
+                            <input asp-for="SoloAtrasados"
+                                   class="form-check-input" />
+
+                            <label asp-for="SoloAtrasados"
+                                   class="form-check-label">
+                                Solo atrasados
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4 col-lg-2">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit"
+                                    class="btn btn-primary flex-fill">
+                                <i class="bi bi-search me-1"></i>
+                                Buscar
+                            </button>
+
+                            <a asp-controller="Prestamo"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary flex-fill">
+                                Limpiar
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Material</th>
+                            <th>Ejemplar</th>
+                            <th>Fecha préstamo</th>
+                            <th>Fecha límite</th>
+                            <th>Estado</th>
+                            <th>Duración</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.Prestamos.Any())
+                        {
+                            foreach (var prestamo in Model.Prestamos)
+                            {
+                                <tr class="@(prestamo.EstaAtrasado ? "table-danger" : string.Empty)">
+
+                                    <td>
+                                        <div class="fw-semibold">
+                                            @prestamo.NombreUsuario
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @prestamo.IdentificacionUsuario
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <div class="fw-semibold">
+                                            @prestamo.TituloMaterial
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @prestamo.CodigoEjemplar
+                                    </td>
+
+                                    <td>
+                                        @prestamo.FechaPrestamo.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @prestamo.FechaLimiteDevolucion.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @if (prestamo.Estado == EstadoPrestamo.Activo)
+                                        {
+                                            if (prestamo.EstaAtrasado)
+                                            {
+                                                <span class="badge bg-danger">
+                                                    Atrasado
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-primary">
+                                                    Activo
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                Devuelto
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <span>
+                                            @prestamo.DiasPrestado
+                                            @(prestamo.DiasPrestado == 1 ? "día" : "días")
+                                        </span>
+
+                                        @if (prestamo.EstaAtrasado)
+                                        {
+                                            <div>
+                                                <small class="text-danger fw-semibold">
+                                                    @prestamo.DiasAtraso
+                                                    @(prestamo.DiasAtraso == 1
+                                                        ? "día de atraso"
+                                                        : "días de atraso")
+                                                </small>
+                                            </div>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <div class="prestamo-acciones">
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-info btn-detalle-prestamo"
+                                                    data-id="@prestamo.IdPrestamo"
+                                                    aria-label="Ver detalle del préstamo">
+                                                <i class="bi bi-eye me-1"></i>
+                                                Ver
+                                            </button>
+
+                                            @if (prestamo.Estado == EstadoPrestamo.Activo)
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-success btn-devolver-prestamo"
+                                                        data-id="@prestamo.IdPrestamo"
+                                                        aria-label="Registrar devolución del préstamo">
+                                                    <i class="bi bi-arrow-return-left me-1"></i>
+                                                    Devolver
+                                                </button>
+                                            }
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8"
+                                    class="text-center py-5">
+
+                                    <i class="bi bi-inbox fs-1 text-muted"></i>
+
+                                    <p class="text-muted mt-2 mb-0">
+                                        No se encontraron préstamos registrados.
+                                    </p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="modalPrestamo"
+     tabindex="-1"
+     aria-labelledby="tituloModalPrestamo"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="tituloModalPrestamo">
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body"
+                 id="contenidoModalPrestamo">
+
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary"
+                         role="status">
+                        <span class="visually-hidden">
+                            Cargando...
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modalElemento =
+            document.getElementById("modalPrestamo");
+
+        const modalPrestamo =
+            new bootstrap.Modal(modalElemento);
+
+        const tituloModal =
+            document.getElementById("tituloModalPrestamo");
+
+        const contenidoModal =
+            document.getElementById("contenidoModalPrestamo");
+
+        const btnCrear =
+            document.getElementById("btnAbrirCrearPrestamo");
+
+        btnCrear?.addEventListener("click", function () {
+            abrirModal(
+                "/Prestamo/CrearModal",
+                "Registrar préstamo"
+            );
+        });
+
+        document.addEventListener("click", function (event) {
+
+            const btnDetalle =
+                event.target.closest(".btn-detalle-prestamo");
+
+            if (btnDetalle) {
+                abrirModal(
+                    `/Prestamo/DetalleModal?id=${btnDetalle.dataset.id}`,
+                    "Detalle del préstamo"
+                );
+
+                return;
+            }
+
+            const btnDevolver =
+                event.target.closest(".btn-devolver-prestamo");
+
+            if (btnDevolver) {
+                abrirModal(
+                    `/Prestamo/DevolucionModal?id=${btnDevolver.dataset.id}`,
+                    "Registrar devolución"
+                );
+            }
+        });
+
+        async function abrirModal(url, titulo) {
+            tituloModal.textContent = titulo;
+
+            contenidoModal.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary"
+                         role="status">
+                        <span class="visually-hidden">
+                            Cargando...
+                        </span>
+                    </div>
+
+                    <p class="text-muted mt-3 mb-0">
+                        Cargando información...
+                    </p>
+                </div>
+            `;
+
+            modalPrestamo.show();
+
+            try {
+                const respuesta = await fetch(url, {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error(
+                        "No fue posible cargar la información solicitada."
+                    );
+                }
+
+                contenidoModal.innerHTML =
+                    await respuesta.text();
+
+                inicializarFormularioModal();
+            }
+            catch (error) {
+                contenidoModal.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        ${error.message}
+                    </div>
+                `;
+
+                await BibliotecaUI.mostrarError(error.message);
+            }
+        }
+
+        function inicializarFormularioModal() {
+            const formulario =
+                contenidoModal.querySelector("form");
+
+            if (!formulario) {
+                return;
+            }
+
+            reiniciarValidacion(formulario);
+
+            formulario.addEventListener(
+                "submit",
+                enviarFormularioModal
+            );
+        }
+
+        async function enviarFormularioModal(event) {
+            event.preventDefault();
+
+            const formulario = event.currentTarget;
+
+            if (window.jQuery &&
+                window.jQuery.validator &&
+                !window.jQuery(formulario).valid()) {
+                return;
+            }
+
+            const esDevolucion =
+                formulario.action
+                    .toLowerCase()
+                    .includes("registrardevolucion");
+
+            if (esDevolucion) {
+                const confirmado =
+                    await BibliotecaUI.confirmar({
+                        titulo: "¿Registrar la devolución?",
+                        mensaje:
+                            "El préstamo se marcará como devuelto y el ejemplar volverá a estar disponible.",
+                        textoConfirmar: "Sí, registrar devolución",
+                        textoCancelar: "Cancelar",
+                        icono: "question"
+                    });
+
+                if (!confirmado) {
+                    return;
+                }
+            }
+
+            const botonSubmit =
+                formulario.querySelector(
+                    'button[type="submit"]'
+                );
+
+            BibliotecaUI.bloquearBoton(
+                botonSubmit,
+                esDevolucion
+                    ? "Registrando devolución..."
+                    : "Registrando préstamo..."
+            );
+
+            try {
+                const respuesta = await fetch(
+                    formulario.action,
+                    {
+                        method: "POST",
+                        body: new FormData(formulario),
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }
+                );
+
+                const tipoContenido =
+                    respuesta.headers.get("content-type") ?? "";
+
+                if (tipoContenido.includes("application/json")) {
+                    const resultado = await respuesta.json();
+
+                    if (resultado.success) {
+                        modalPrestamo.hide();
+
+                        await BibliotecaUI.mostrarExito(
+                            resultado.message,
+                            esDevolucion
+                                ? "Devolución registrada"
+                                : "Préstamo registrado"
+                        );
+
+                        window.location.reload();
+                        return;
+                    }
+
+                    await BibliotecaUI.mostrarError(
+                        resultado.message ??
+                        "No fue posible completar la operación."
+                    );
+
+                    BibliotecaUI.restaurarBoton(botonSubmit);
+                    return;
+                }
+
+                contenidoModal.innerHTML =
+                    await respuesta.text();
+
+                inicializarFormularioModal();
+            }
+            catch {
+                BibliotecaUI.restaurarBoton(botonSubmit);
+
+                await BibliotecaUI.mostrarError(
+                    "Ocurrió un error al comunicarse con el servidor."
+                );
+            }
+        }
+
+        function reiniciarValidacion(formulario) {
+            if (!window.jQuery ||
+                !window.jQuery.validator ||
+                !window.jQuery.validator.unobtrusive) {
+                return;
+            }
+
+            const $formulario =
+                window.jQuery(formulario);
+
+            $formulario.removeData("validator");
+            $formulario.removeData(
+                "unobtrusiveValidation"
+            );
+
+            window.jQuery.validator.unobtrusive
+                .parse($formulario);
+        }
+    });
+</script>
+}

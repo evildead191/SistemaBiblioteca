@@ -1,0 +1,257 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Prestamo.PrestamoDetalleViewModel
+
+@using SistemaBiblioteca.Entities.Enums
+
+@{
+    var prestamo = Model.Prestamo;
+}
+
+<div class="row g-4">
+
+    <div class="col-12">
+        <h6 class="text-uppercase text-muted border-bottom pb-2">
+            Información del usuario
+        </h6>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Nombre completo
+        </small>
+
+        <span class="fw-semibold">
+            @prestamo.NombreUsuario
+        </span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Identificación
+        </small>
+
+        <span>
+            @prestamo.IdentificacionUsuario
+        </span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Tipo de usuario
+        </small>
+
+        <span>
+            @prestamo.TipoUsuario
+        </span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Sección o departamento
+        </small>
+
+        <span>
+            @(string.IsNullOrWhiteSpace(prestamo.SeccionODepartamento)
+                ? "No registrado"
+                : prestamo.SeccionODepartamento)
+        </span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Correo
+        </small>
+
+        <span>
+            @(string.IsNullOrWhiteSpace(prestamo.CorreoUsuario)
+                ? "No registrado"
+                : prestamo.CorreoUsuario)
+        </span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <small class="text-muted d-block">
+            Teléfono
+        </small>
+
+        <span>
+            @(string.IsNullOrWhiteSpace(prestamo.TelefonoUsuario)
+                ? "No registrado"
+                : prestamo.TelefonoUsuario)
+        </span>
+    </div>
+
+    <div class="col-12 mt-4">
+        <h6 class="text-uppercase text-muted border-bottom pb-2">
+            Material bibliográfico
+        </h6>
+    </div>
+
+    <div class="col-12 col-md-8">
+        <small class="text-muted d-block">
+            Título
+        </small>
+
+        <span class="fw-semibold">
+            @prestamo.TituloMaterial
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Autor
+        </small>
+
+        <span>
+            @prestamo.AutorMaterial
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Código del ejemplar
+        </small>
+
+        <span>
+            @prestamo.CodigoEjemplar
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Número de inscripción
+        </small>
+
+        <span>
+            @(string.IsNullOrWhiteSpace(prestamo.NumeroInscripcion)
+                ? "No registrado"
+                : prestamo.NumeroInscripcion)
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Biblioteca
+        </small>
+
+        <span>
+            @(string.IsNullOrWhiteSpace(prestamo.Biblioteca)
+                ? "No registrada"
+                : prestamo.Biblioteca)
+        </span>
+    </div>
+
+    <div class="col-12 mt-4">
+        <h6 class="text-uppercase text-muted border-bottom pb-2">
+            Información del préstamo
+        </h6>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Fecha del préstamo
+        </small>
+
+        <span>
+            @prestamo.FechaPrestamo.ToString("dd/MM/yyyy")
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Fecha límite
+        </small>
+
+        <span>
+            @prestamo.FechaLimiteDevolucion.ToString("dd/MM/yyyy")
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Fecha de devolución
+        </small>
+
+        <span>
+            @(prestamo.FechaDevolucionReal.HasValue
+                ? prestamo.FechaDevolucionReal.Value.ToString("dd/MM/yyyy")
+                : "Pendiente")
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Estado
+        </small>
+
+        @if (prestamo.Estado == EstadoPrestamo.Devuelto)
+        {
+            <span class="badge bg-success">
+                Devuelto
+            </span>
+        }
+        else if (prestamo.EstaAtrasado)
+        {
+            <span class="badge bg-danger">
+                Atrasado
+            </span>
+        }
+        else
+        {
+            <span class="badge bg-primary">
+                Activo
+            </span>
+        }
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Días prestado
+        </small>
+
+        <span>
+            @prestamo.DiasPrestado
+            @(prestamo.DiasPrestado == 1 ? "día" : "días")
+        </span>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <small class="text-muted d-block">
+            Días de atraso
+        </small>
+
+        <span class="@(prestamo.EstaAtrasado ? "text-danger fw-semibold" : string.Empty)">
+            @prestamo.DiasAtraso
+            @(prestamo.DiasAtraso == 1 ? "día" : "días")
+        </span>
+    </div>
+
+    <div class="col-12">
+        <small class="text-muted d-block">
+            Observaciones
+        </small>
+
+        <div class="border rounded p-3 bg-light">
+            @if (string.IsNullOrWhiteSpace(prestamo.Observaciones))
+            {
+                <span class="text-muted">
+                    No se registraron observaciones.
+                </span>
+            }
+            else
+            {
+                <span style="white-space: pre-line;">
+                    @prestamo.Observaciones
+                </span>
+            }
+        </div>
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-end mt-4">
+    <button type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal">
+        Cerrar
+    </button>
+</div>
