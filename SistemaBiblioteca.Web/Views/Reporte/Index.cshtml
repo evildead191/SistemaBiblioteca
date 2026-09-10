@@ -4,235 +4,304 @@
     ViewData["Title"] = "Reportes";
 }
 
-<div class="container py-4">
+<div class="container py-4 reporte-page">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="reporte-header mb-4">
 
         <div>
+            <span class="reporte-section-label">
+                Gestión de información
+            </span>
 
-            <h2 class="fw-bold text-primary mb-1">
+            <h1 class="reporte-title">
                 <i class="bi bi-bar-chart-line-fill me-2"></i>
                 Centro de Reportes
-            </h2>
+            </h1>
 
             <p class="text-muted mb-0">
                 Consulte y exporte la información registrada en el sistema.
             </p>
-
         </div>
 
     </div>
 
-    <div class="row g-4 mb-5">
+    <section class="mb-5">
 
-        <div class="col-lg-2 col-md-4">
+        <div class="reporte-section-heading mb-3">
+            <div>
+                <h2>Resumen general</h2>
 
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon bg-primary">
-                    <i class="bi bi-book"></i>
-                </div>
-
-                <h3>@Model.TotalMateriales</h3>
-
-                <span>Materiales</span>
-
+                <p class="text-muted mb-0">
+                    Estado actual de los principales registros del sistema.
+                </p>
             </div>
-
         </div>
 
-        <div class="col-lg-2 col-md-4">
+        <div class="row g-3">
 
-            <div class="dashboard-card">
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-blue">
 
-                <div class="dashboard-icon bg-success">
-                    <i class="bi bi-journals"></i>
-                </div>
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                    </div>
 
-                <h3>@Model.TotalEjemplares</h3>
+                    <div class="reporte-stat-value">
+                        @Model.TotalMateriales
+                    </div>
 
-                <span>Ejemplares</span>
+                    <div class="reporte-stat-title">
+                        Materiales
+                    </div>
 
-            </div>
-
-        </div>
-
-        <div class="col-lg-2 col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon bg-info">
-                    <i class="bi bi-people"></i>
-                </div>
-
-                <h3>@Model.TotalUsuarios</h3>
-
-                <span>Usuarios</span>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-2 col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon bg-warning">
-                    <i class="bi bi-arrow-left-right"></i>
-                </div>
-
-                <h3>@Model.TotalPrestamos</h3>
-
-                <span>Préstamos</span>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-2 col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon bg-secondary">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-
-                <h3>@Model.PrestamosActivos</h3>
-
-                <span>Activos</span>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-2 col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon bg-danger">
-                    <i class="bi bi-exclamation-circle"></i>
-                </div>
-
-                <h3>@Model.PrestamosAtrasados</h3>
-
-                <span>Atrasados</span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="row g-4">
-
-        <div class="col-lg-3">
-
-            <a asp-action="Materiales"
-               class="text-decoration-none">
-
-                <div class="card h-100 shadow-sm border-0 reporte-card">
-
-                    <div class="card-body text-center">
-
-                        <i class="bi bi-book display-5 text-primary"></i>
-
-                        <h5 class="mt-3">
-                            Materiales
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Consulta completa del catálogo.
-                        </p>
-
+                    <div class="reporte-stat-description">
+                        Registros del catálogo.
                     </div>
 
                 </div>
+            </div>
 
-            </a>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-green">
 
-        </div>
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-journals"></i>
+                        </div>
+                    </div>
 
-        <div class="col-lg-3">
+                    <div class="reporte-stat-value">
+                        @Model.TotalEjemplares
+                    </div>
 
-            <a asp-action="Ejemplares"
-               class="text-decoration-none">
+                    <div class="reporte-stat-title">
+                        Ejemplares
+                    </div>
 
-                <div class="card h-100 shadow-sm border-0 reporte-card">
-
-                    <div class="card-body text-center">
-
-                        <i class="bi bi-journals display-5 text-success"></i>
-
-                        <h5 class="mt-3">
-                            Ejemplares
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Estado y disponibilidad.
-                        </p>
-
+                    <div class="reporte-stat-description">
+                        Copias registradas.
                     </div>
 
                 </div>
+            </div>
 
-            </a>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-mint">
 
-        </div>
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
 
-        <div class="col-lg-3">
+                    <div class="reporte-stat-value">
+                        @Model.TotalUsuarios
+                    </div>
 
-            <a asp-action="Usuarios"
-               class="text-decoration-none">
+                    <div class="reporte-stat-title">
+                        Usuarios
+                    </div>
 
-                <div class="card h-100 shadow-sm border-0 reporte-card">
-
-                    <div class="card-body text-center">
-
-                        <i class="bi bi-people display-5 text-info"></i>
-
-                        <h5 class="mt-3">
-                            Usuarios
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Personas registradas.
-                        </p>
-
+                    <div class="reporte-stat-description">
+                        Personas registradas.
                     </div>
 
                 </div>
+            </div>
 
-            </a>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-gold">
 
-        </div>
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+                    </div>
 
-        <div class="col-lg-3">
+                    <div class="reporte-stat-value">
+                        @Model.TotalPrestamos
+                    </div>
 
-            <a asp-action="Prestamos"
-               class="text-decoration-none">
+                    <div class="reporte-stat-title">
+                        Préstamos
+                    </div>
 
-                <div class="card h-100 shadow-sm border-0 reporte-card">
-
-                    <div class="card-body text-center">
-
-                        <i class="bi bi-arrow-left-right display-5 text-warning"></i>
-
-                        <h5 class="mt-3">
-                            Préstamos
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Historial y préstamos activos.
-                        </p>
-
+                    <div class="reporte-stat-description">
+                        Historial total.
                     </div>
 
                 </div>
+            </div>
 
-            </a>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-purple">
+
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
+
+                    <div class="reporte-stat-value">
+                        @Model.PrestamosActivos
+                    </div>
+
+                    <div class="reporte-stat-title">
+                        Activos
+                    </div>
+
+                    <div class="reporte-stat-description">
+                        Pendientes de devolución.
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="reporte-stat-card reporte-stat-red">
+
+                    <div class="reporte-stat-top">
+                        <div class="reporte-stat-icon">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+
+                    <div class="reporte-stat-value">
+                        @Model.PrestamosAtrasados
+                    </div>
+
+                    <div class="reporte-stat-title">
+                        Atrasados
+                    </div>
+
+                    <div class="reporte-stat-description">
+                        Requieren seguimiento.
+                    </div>
+
+                </div>
+            </div>
 
         </div>
 
-    </div>
+    </section>
+
+    <section>
+
+        <div class="reporte-section-heading mb-3">
+            <div>
+                <h2>Reportes disponibles</h2>
+
+                <p class="text-muted mb-0">
+                    Seleccione el tipo de información que desea consultar.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-xl-3">
+                <a asp-action="Materiales"
+                   class="reporte-access-card">
+
+                    <div class="reporte-access-icon access-blue">
+                        <i class="bi bi-book"></i>
+                    </div>
+
+                    <div class="reporte-access-content">
+                        <h3>Materiales</h3>
+
+                        <p>
+                            Consulte el catálogo, la clasificación y la
+                            cantidad de ejemplares asociados.
+                        </p>
+
+                        <span>
+                            Ver reporte
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+
+                </a>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <a asp-action="Ejemplares"
+                   class="reporte-access-card">
+
+                    <div class="reporte-access-icon access-green">
+                        <i class="bi bi-journals"></i>
+                    </div>
+
+                    <div class="reporte-access-content">
+                        <h3>Ejemplares</h3>
+
+                        <p>
+                            Revise disponibilidad, estado físico y biblioteca
+                            asignada.
+                        </p>
+
+                        <span>
+                            Ver reporte
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+
+                </a>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <a asp-action="Usuarios"
+                   class="reporte-access-card">
+
+                    <div class="reporte-access-icon access-mint">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div class="reporte-access-content">
+                        <h3>Usuarios</h3>
+
+                        <p>
+                            Consulte personas registradas y su historial de
+                            préstamos.
+                        </p>
+
+                        <span>
+                            Ver reporte
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+
+                </a>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <a asp-action="Prestamos"
+                   class="reporte-access-card">
+
+                    <div class="reporte-access-icon access-gold">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+
+                    <div class="reporte-access-content">
+                        <h3>Préstamos</h3>
+
+                        <p>
+                            Consulte préstamos activos, devueltos y atrasados.
+                        </p>
+
+                        <span>
+                            Ver reporte
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+
+                </a>
+            </div>
+
+        </div>
+
+    </section>
 
 </div>

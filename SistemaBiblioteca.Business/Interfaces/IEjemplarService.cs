@@ -25,4 +25,7 @@ public interface IEjemplarService
 
     Task<int> ContarPorEstadoAsync(
         EstadoEjemplar estado);
+
+    Task<(string? UltimoCodigo, string SiguienteCodigo)>
+    ObtenerInformacionCodigosAsync();
 }

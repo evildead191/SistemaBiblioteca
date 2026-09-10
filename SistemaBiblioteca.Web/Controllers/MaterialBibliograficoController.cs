@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaBiblioteca.Business.DTOs.MaterialBibliografico;
 using SistemaBiblioteca.Business.Interfaces;
 using SistemaBiblioteca.Web.ViewModels.MaterialBibliografico;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class MaterialBibliograficoController : Controller
 {
     private readonly IMaterialBibliograficoService _service;

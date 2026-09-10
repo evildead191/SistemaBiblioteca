@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaBiblioteca.Business.DTOs.Reporte;
 using SistemaBiblioteca.Business.Interfaces;
@@ -7,14 +8,18 @@ using SistemaBiblioteca.Web.ViewModels.Reporte;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class ReporteController : Controller
 {
     private readonly IReporteService _reporteService;
+    private readonly IReporteExcelService _excelService;
 
     public ReporteController(
-        IReporteService reporteService)
+        IReporteService reporteService,
+        IReporteExcelService excelService)
     {
         _reporteService = reporteService;
+        _excelService = excelService;
     }
 
     [HttpGet]
@@ -173,6 +178,70 @@ public class ReporteController : Controller
         };
 
         return View(viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportarMateriales(
+    [FromQuery] ReporteMaterialFiltroDto filtro)
+    {
+        List<ReporteMaterialDto> datos =
+            await _reporteService.ObtenerMaterialesAsync(filtro);
+
+        byte[] archivo =
+            _excelService.GenerarMateriales(datos);
+
+        return File(
+            archivo,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"Reporte_Materiales_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportarEjemplares(
+    [FromQuery] ReporteEjemplarFiltroDto filtro)
+    {
+        List<ReporteEjemplarDto> datos =
+            await _reporteService.ObtenerEjemplaresAsync(filtro);
+
+        byte[] archivo =
+            _excelService.GenerarEjemplares(datos);
+
+        return File(
+            archivo,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"Reporte_Ejemplares_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportarUsuarios(
+    [FromQuery] ReporteUsuarioFiltroDto filtro)
+    {
+        List<ReporteUsuarioDto> datos =
+            await _reporteService.ObtenerUsuariosAsync(filtro);
+
+        byte[] archivo =
+            _excelService.GenerarUsuarios(datos);
+
+        return File(
+            archivo,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"Reporte_Usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportarPrestamos(
+    [FromQuery] ReportePrestamoFiltroDto filtro)
+    {
+        List<ReportePrestamoDto> datos =
+            await _reporteService.ObtenerPrestamosAsync(filtro);
+
+        byte[] archivo =
+            _excelService.GenerarPrestamos(datos);
+
+        return File(
+            archivo,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"Reporte_Prestamos_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
     }
 
     private static List<SelectListItem>

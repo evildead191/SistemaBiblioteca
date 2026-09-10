@@ -7,8 +7,7 @@
 <div class="container py-4">
 
     <div class="d-flex flex-column flex-md-row
-        justify-content-between
-        align-items-md-center
+        justify-content-between align-items-md-center
         gap-3 mb-4">
 
         <div>
@@ -24,7 +23,6 @@
 
         <a asp-action="Index"
            class="btn btn-outline-secondary">
-
             <i class="bi bi-arrow-left me-1"></i>
             Volver
         </a>
@@ -40,7 +38,6 @@
                 <div class="row g-3">
 
                     <div class="col-lg-6">
-
                         <label asp-for="Filtro.Busqueda"
                                class="form-label">
                             Buscar
@@ -49,11 +46,9 @@
                         <input asp-for="Filtro.Busqueda"
                                class="form-control"
                                placeholder="Código, inscripción, título, autor o biblioteca..." />
-
                     </div>
 
                     <div class="col-md-6 col-lg-3">
-
                         <label asp-for="Filtro.Estado"
                                class="form-label">
                             Estado del ejemplar
@@ -63,11 +58,9 @@
                                 asp-items="Model.EstadosEjemplar"
                                 class="form-select">
                         </select>
-
                     </div>
 
                     <div class="col-md-6 col-lg-3">
-
                         <label asp-for="Filtro.Activo"
                                class="form-label">
                             Estado del registro
@@ -77,7 +70,6 @@
                                 asp-items="Model.EstadosRegistro"
                                 class="form-select">
                         </select>
-
                     </div>
 
                 </div>
@@ -86,26 +78,24 @@
 
                     <button type="submit"
                             class="btn btn-primary">
-
                         <i class="bi bi-search me-1"></i>
                         Buscar
                     </button>
 
                     <a asp-action="Ejemplares"
                        class="btn btn-outline-secondary">
-
                         <i class="bi bi-eraser me-1"></i>
                         Limpiar
                     </a>
 
-                    <button type="button"
-                            class="btn btn-success ms-md-auto"
-                            disabled
-                            title="La exportación se habilitará en el siguiente paso">
-
+                    <a asp-action="ExportarEjemplares"
+                       asp-route-Busqueda="@Model.Filtro.Busqueda"
+                       asp-route-Estado="@Model.Filtro.Estado"
+                       asp-route-Activo="@Model.Filtro.Activo"
+                       class="btn btn-success ms-md-auto">
                         <i class="bi bi-file-earmark-excel me-1"></i>
                         Exportar Excel
-                    </button>
+                    </a>
 
                 </div>
 
@@ -117,48 +107,38 @@
     <div class="row g-3 mb-4">
 
         <div class="col-6 col-lg">
-
             <div class="dashboard-card h-100">
                 <h3>@Model.TotalResultados</h3>
                 <span>Resultados</span>
             </div>
-
         </div>
 
         <div class="col-6 col-lg">
-
             <div class="dashboard-card h-100">
                 <h3>@Model.TotalDisponibles</h3>
                 <span>Disponibles</span>
             </div>
-
         </div>
 
         <div class="col-6 col-lg">
-
             <div class="dashboard-card h-100">
                 <h3>@Model.TotalPrestados</h3>
                 <span>Prestados</span>
             </div>
-
         </div>
 
         <div class="col-6 col-lg">
-
             <div class="dashboard-card h-100">
                 <h3>@Model.TotalMantenimiento</h3>
                 <span>Mantenimiento</span>
             </div>
-
         </div>
 
         <div class="col-12 col-lg">
-
             <div class="dashboard-card h-100">
                 <h3>@Model.TotalFueraServicio</h3>
                 <span>Fuera de servicio</span>
             </div>
-
         </div>
 
     </div>
@@ -168,10 +148,7 @@
         @if (Model.Ejemplares.Count == 0)
         {
             <div class="card-body text-center py-5">
-
-                <i class="bi bi-search
-                display-4
-                text-muted"></i>
+                <i class="bi bi-search display-4 text-muted"></i>
 
                 <h5 class="mt-3 mb-2">
                     No se encontraron ejemplares
@@ -180,7 +157,6 @@
                 <p class="text-muted mb-0">
                     Ajuste los filtros e intente nuevamente.
                 </p>
-
             </div>
         }
         else
@@ -196,14 +172,8 @@
                             <th>Material</th>
                             <th>Autor</th>
                             <th>Biblioteca</th>
-
-                            <th class="text-center">
-                                Estado
-                            </th>
-
-                            <th class="text-center">
-                                Registro
-                            </th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Registro</th>
                         </tr>
                     </thead>
 
@@ -212,11 +182,8 @@
                         @foreach (var ejemplar in Model.Ejemplares)
                         {
                             <tr>
-
                                 <td>
-                                    <strong>
-                                        @ejemplar.CodigoBarras
-                                    </strong>
+                                    <strong>@ejemplar.CodigoBarras</strong>
                                 </td>
 
                                 <td>
@@ -236,9 +203,7 @@
                                     </small>
                                 </td>
 
-                                <td>
-                                    @ejemplar.AutorMaterial
-                                </td>
+                                <td>@ejemplar.AutorMaterial</td>
 
                                 <td>
                                     @(string.IsNullOrWhiteSpace(
@@ -258,7 +223,6 @@
                                                 <i class="bi bi-check-circle me-1"></i>
                                                 Disponible
                                             </span>
-
                                             break;
 
                                         case SistemaBiblioteca.Entities.Enums
@@ -268,7 +232,6 @@
                                                 <i class="bi bi-arrow-left-right me-1"></i>
                                                 Prestado
                                             </span>
-
                                             break;
 
                                         case SistemaBiblioteca.Entities.Enums
@@ -278,7 +241,6 @@
                                                 <i class="bi bi-tools me-1"></i>
                                                 Mantenimiento
                                             </span>
-
                                             break;
 
                                         case SistemaBiblioteca.Entities.Enums
@@ -288,14 +250,12 @@
                                                 <i class="bi bi-x-circle me-1"></i>
                                                 Fuera de servicio
                                             </span>
-
                                             break;
                                     }
 
                                 </td>
 
                                 <td class="text-center">
-
                                     @if (ejemplar.Activo)
                                     {
                                         <span class="badge bg-success">
@@ -308,9 +268,7 @@
                                             Inactivo
                                         </span>
                                     }
-
                                 </td>
-
                             </tr>
                         }
 

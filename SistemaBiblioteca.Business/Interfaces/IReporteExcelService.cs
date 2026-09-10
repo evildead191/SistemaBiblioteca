@@ -1,10 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SistemaBiblioteca.Business.DTOs.Reporte;
 
-namespace SistemaBiblioteca.Business.Interfaces
+namespace SistemaBiblioteca.Business.Interfaces;
+
+public interface IReporteExcelService
 {
-    internal interface IReporteExcelService
-    {
-    }
+    byte[] GenerarMateriales(
+        IReadOnlyCollection<ReporteMaterialDto> materiales);
+
+    byte[] GenerarEjemplares(
+        IReadOnlyCollection<ReporteEjemplarDto> ejemplares);
+
+    byte[] GenerarUsuarios(
+        IReadOnlyCollection<ReporteUsuarioDto> usuarios);
+
+    byte[] GenerarPrestamos(
+        IReadOnlyCollection<ReportePrestamoDto> prestamos);
 }

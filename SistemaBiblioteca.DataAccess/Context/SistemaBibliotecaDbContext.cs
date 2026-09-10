@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SistemaBiblioteca.Entities.Models;
 
 namespace SistemaBiblioteca.DataAccess.Context;
 
-public class SistemaBibliotecaDbContext : DbContext
+public class SistemaBibliotecaDbContext : IdentityDbContext<ApplicationUser>
 {
     public SistemaBibliotecaDbContext(
         DbContextOptions<SistemaBibliotecaDbContext> options)
@@ -62,7 +63,8 @@ public class SistemaBibliotecaDbContext : DbContext
         });
     }
 
-    private static void ConfigurarEjemplar(ModelBuilder modelBuilder)
+    private static void ConfigurarEjemplar(
+        ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Ejemplar>(entity =>
         {
@@ -117,7 +119,8 @@ public class SistemaBibliotecaDbContext : DbContext
         });
     }
 
-    private static void ConfigurarPrestamo(ModelBuilder modelBuilder)
+    private static void ConfigurarPrestamo(
+        ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Prestamo>(entity =>
         {
@@ -162,7 +165,8 @@ public class SistemaBibliotecaDbContext : DbContext
         });
     }
 
-    private static void ConfigurarAuditoria(ModelBuilder modelBuilder)
+    private static void ConfigurarAuditoria(
+        ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Auditoria>(entity =>
         {

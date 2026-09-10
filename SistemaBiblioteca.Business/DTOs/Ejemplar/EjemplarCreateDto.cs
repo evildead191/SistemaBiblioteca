@@ -5,10 +5,10 @@ namespace SistemaBiblioteca.Business.DTOs.Ejemplar;
 
 public class EjemplarCreateDto
 {
-    [Required(ErrorMessage = "Ingrese el código de barras.")]
+    [Required(ErrorMessage = "Ingrese el código base.")]
     [StringLength(
         100,
-        ErrorMessage = "El código de barras no puede superar los 100 caracteres.")]
+        ErrorMessage = "El código base no puede superar los 100 caracteres.")]
     public string CodigoBarras { get; set; }
         = string.Empty;
 
@@ -26,4 +26,13 @@ public class EjemplarCreateDto
     [Required(ErrorMessage = "Seleccione el estado del ejemplar.")]
     public EstadoEjemplar Estado { get; set; }
         = EstadoEjemplar.Disponible;
+
+    [Range(
+        1,
+        100,
+        ErrorMessage = "La cantidad debe estar entre 1 y 100 ejemplares.")]
+    public int Cantidad { get; set; } = 1;
+
+    public bool GenerarCodigosAutomaticamente { get; set; }
+        = true;
 }

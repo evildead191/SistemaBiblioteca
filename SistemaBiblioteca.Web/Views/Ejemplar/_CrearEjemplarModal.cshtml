@@ -3,7 +3,8 @@
 <form asp-controller="Ejemplar"
       asp-action="Crear"
       method="post"
-      autocomplete="off">
+      autocomplete="off"
+      id="formCrearEjemplar">
 
     @Html.AntiForgeryToken()
 
@@ -14,49 +15,31 @@
              role="alert">
         </div>
 
+        <div class="alert alert-info
+            d-flex align-items-start
+            gap-2 mb-4">
+
+            <i class="bi bi-info-circle-fill mt-1"></i>
+
+            <div>
+                Puede registrar uno o varios ejemplares
+                del mismo material. Los códigos pueden
+                generarse automáticamente para evitar
+                registros duplicados.
+            </div>
+
+        </div>
+
         <div class="row g-3">
-
-            <div class="col-12 col-md-6">
-
-                <label asp-for="Ejemplar.CodigoBarras"
-                       class="form-label">
-                    Código de barras
-                    <span class="text-danger">*</span>
-                </label>
-
-                <input asp-for="Ejemplar.CodigoBarras"
-                       class="form-control"
-                       placeholder="Ejemplo: EJ-0001" />
-
-                <span asp-validation-for="Ejemplar.CodigoBarras"
-                      class="text-danger">
-                </span>
-
-            </div>
-
-            <div class="col-12 col-md-6">
-
-                <label asp-for="Ejemplar.NumeroInscripcion"
-                       class="form-label">
-                    Número de inscripción
-                </label>
-
-                <input asp-for="Ejemplar.NumeroInscripcion"
-                       class="form-control"
-                       placeholder="Número de inscripción" />
-
-                <span asp-validation-for="Ejemplar.NumeroInscripcion"
-                      class="text-danger">
-                </span>
-
-            </div>
 
             <div class="col-12">
 
                 <label asp-for="Ejemplar.IdMaterialBibliografico"
                        class="form-label">
+
                     Material bibliográfico
                     <span class="text-danger">*</span>
+
                 </label>
 
                 <select asp-for="Ejemplar.IdMaterialBibliografico"
@@ -77,10 +60,40 @@
 
             <div class="col-12 col-md-6">
 
+                <label asp-for="Ejemplar.Cantidad"
+                       class="form-label">
+
+                    Cantidad de ejemplares
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input asp-for="Ejemplar.Cantidad"
+                       type="number"
+                       min="1"
+                       max="100"
+                       class="form-control"
+                       id="cantidadEjemplares" />
+
+                <span asp-validation-for="Ejemplar.Cantidad"
+                      class="text-danger">
+                </span>
+
+                <div class="form-text">
+                    Puede registrar hasta 100 ejemplares
+                    en una sola operación.
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
                 <label asp-for="Ejemplar.Estado"
                        class="form-label">
-                    Estado del ejemplar
+
+                    Estado inicial
                     <span class="text-danger">*</span>
+
                 </label>
 
                 <select asp-for="Ejemplar.Estado"
@@ -92,14 +105,162 @@
                       class="text-danger">
                 </span>
 
+                <div class="form-text">
+                    El estado Prestado se asigna
+                    únicamente mediante un préstamo.
+                </div>
+
+            </div>
+
+            <div class="col-12">
+
+                <div class="form-check
+                    form-switch
+                    border
+                    rounded-3
+                    p-3 ps-5">
+
+                    <input asp-for="Ejemplar.GenerarCodigosAutomaticamente"
+                           class="form-check-input"
+                           type="checkbox"
+                           id="generarCodigosAutomaticamente" />
+
+                    <label asp-for="Ejemplar.GenerarCodigosAutomaticamente"
+                           class="form-check-label fw-semibold">
+
+                        Generar códigos automáticamente
+
+                    </label>
+
+                    <div class="small text-muted mt-1">
+                        El sistema continuará la secuencia
+                        existente y generará un código único
+                        para cada ejemplar.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12"
+                 id="informacionCodigosAutomaticos">
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="border rounded-3
+                            p-3 h-100">
+
+                            <div class="small text-muted">
+                                Último código registrado
+                            </div>
+
+                            <div class="fw-semibold mt-1">
+
+                                @if (string.IsNullOrWhiteSpace(
+                                    Model.UltimoCodigoRegistrado))
+                                {
+                                    <span>
+                                        Aún no existe una secuencia
+                                    </span>
+                                }
+                                else
+                                {
+                                    @Model.UltimoCodigoRegistrado
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-6">
+
+                        <div class="border rounded-3
+                            p-3 h-100">
+
+                            <div class="small text-muted">
+                                Siguiente código sugerido
+                            </div>
+
+                            <div class="fw-semibold mt-1">
+                                @Model.SiguienteCodigoSugerido
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                <label asp-for="Ejemplar.CodigoBarras"
+                       class="form-label"
+                       id="labelCodigoBarras">
+
+                    Código base
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input asp-for="Ejemplar.CodigoBarras"
+                       class="form-control"
+                       id="codigoBarrasEjemplar"
+                       placeholder="Ejemplo: EJ" />
+
+                <span asp-validation-for="Ejemplar.CodigoBarras"
+                      class="text-danger">
+                </span>
+
+                <div class="form-text"
+                     id="ayudaCodigoBarras">
+
+                    Ejemplo: con base EJ se generarán
+                    códigos como EJ-0001, EJ-0002...
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6"
+                 id="contenedorNumeroInscripcion">
+
+                <label asp-for="Ejemplar.NumeroInscripcion"
+                       class="form-label">
+
+                    Número de inscripción
+
+                </label>
+
+                <input asp-for="Ejemplar.NumeroInscripcion"
+                       class="form-control"
+                       id="numeroInscripcionEjemplar"
+                       placeholder="Número de inscripción" />
+
+                <span asp-validation-for="Ejemplar.NumeroInscripcion"
+                      class="text-danger">
+                </span>
+
+                <div class="form-text">
+                    Disponible únicamente cuando se
+                    registra un solo ejemplar.
+                </div>
+
             </div>
 
         </div>
 
         <p class="small text-muted mt-3 mb-0">
+
             Los campos marcados con
             <span class="text-danger">*</span>
             son obligatorios.
+
         </p>
 
     </div>
@@ -116,8 +277,12 @@
         <button type="submit"
                 class="btn btn-primary">
 
-            <i class="bi bi-floppy me-1"></i>
-            Registrar ejemplar
+            <i class="bi bi-plus-circle me-1"></i>
+
+            <span id="textoBotonRegistrarEjemplar">
+                Registrar ejemplar
+            </span>
+
         </button>
 
     </div>

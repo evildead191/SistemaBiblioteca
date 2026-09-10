@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaBiblioteca.Business.DTOs.Ejemplar;
 using SistemaBiblioteca.Business.Interfaces;
@@ -7,6 +8,7 @@ using SistemaBiblioteca.Web.ViewModels.Ejemplar;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class EjemplarController : Controller
 {
     private readonly IEjemplarService _ejemplarService;
@@ -18,6 +20,7 @@ public class EjemplarController : Controller
         IMaterialBibliograficoService materialBibliograficoService)
     {
         _ejemplarService = ejemplarService;
+
         _materialBibliograficoService =
             materialBibliograficoService;
     }
@@ -41,17 +44,36 @@ public class EjemplarController : Controller
     [HttpGet]
     public async Task<IActionResult> CrearModal()
     {
+        (string? ultimoCodigo, string siguienteCodigo) =
+            await _ejemplarService
+                .ObtenerInformacionCodigosAsync();
+
         EjemplarCreateViewModel viewModel = new()
         {
             Ejemplar = new EjemplarCreateDto
             {
-                Estado = EstadoEjemplar.Disponible
+                CodigoBarras = "EJ",
+
+                Estado =
+                    EstadoEjemplar.Disponible,
+
+                Cantidad = 1,
+
+                GenerarCodigosAutomaticamente =
+                    true
             },
 
             MaterialesBibliograficos =
                 await ObtenerMaterialesBibliograficosAsync(),
 
-            Estados = ObtenerEstados()
+            Estados =
+                ObtenerEstadosCreacion(),
+
+            UltimoCodigoRegistrado =
+                ultimoCodigo,
+
+            SiguienteCodigoSugerido =
+                siguienteCodigo
         };
 
         return PartialView(
@@ -66,13 +88,8 @@ public class EjemplarController : Controller
     {
         if (!ModelState.IsValid)
         {
-            viewModel.MaterialesBibliograficos =
-                await ObtenerMaterialesBibliograficosAsync(
-                    viewModel.Ejemplar.IdMaterialBibliografico);
-
-            viewModel.Estados =
-                ObtenerEstados(
-                    viewModel.Ejemplar.Estado);
+            await PrepararCrearViewModelAsync(
+                viewModel);
 
             return PartialView(
                 "_CrearEjemplarModal",
@@ -89,13 +106,8 @@ public class EjemplarController : Controller
                 string.Empty,
                 mensaje);
 
-            viewModel.MaterialesBibliograficos =
-                await ObtenerMaterialesBibliograficosAsync(
-                    viewModel.Ejemplar.IdMaterialBibliografico);
-
-            viewModel.Estados =
-                ObtenerEstados(
-                    viewModel.Ejemplar.Estado);
+            await PrepararCrearViewModelAsync(
+                viewModel);
 
             return PartialView(
                 "_CrearEjemplarModal",
@@ -110,10 +122,12 @@ public class EjemplarController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> EditarModal(int id)
+    public async Task<IActionResult> EditarModal(
+        int id)
     {
         EjemplarEditDto? ejemplar =
-            await _ejemplarService.ObtenerParaEditarAsync(id);
+            await _ejemplarService
+                .ObtenerParaEditarAsync(id);
 
         if (ejemplar is null)
         {
@@ -129,7 +143,7 @@ public class EjemplarController : Controller
                     ejemplar.IdMaterialBibliografico),
 
             Estados =
-                ObtenerEstados(
+                ObtenerEstadosEdicion(
                     ejemplar.Estado)
         };
 
@@ -145,13 +159,8 @@ public class EjemplarController : Controller
     {
         if (!ModelState.IsValid)
         {
-            viewModel.MaterialesBibliograficos =
-                await ObtenerMaterialesBibliograficosAsync(
-                    viewModel.Ejemplar.IdMaterialBibliografico);
-
-            viewModel.Estados =
-                ObtenerEstados(
-                    viewModel.Ejemplar.Estado);
+            await PrepararEditarViewModelAsync(
+                viewModel);
 
             return PartialView(
                 "_EditarEjemplarModal",
@@ -168,13 +177,8 @@ public class EjemplarController : Controller
                 string.Empty,
                 mensaje);
 
-            viewModel.MaterialesBibliograficos =
-                await ObtenerMaterialesBibliograficosAsync(
-                    viewModel.Ejemplar.IdMaterialBibliografico);
-
-            viewModel.Estados =
-                ObtenerEstados(
-                    viewModel.Ejemplar.Estado);
+            await PrepararEditarViewModelAsync(
+                viewModel);
 
             return PartialView(
                 "_EditarEjemplarModal",
@@ -190,21 +194,62 @@ public class EjemplarController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CambiarEstado(int id)
+    public async Task<IActionResult> CambiarEstado(
+        int id)
     {
         (bool exitoso, string mensaje) =
-            await _ejemplarService.CambiarEstadoAsync(id);
+            await _ejemplarService
+                .CambiarEstadoAsync(id);
 
         if (exitoso)
         {
-            TempData["MensajeExito"] = mensaje;
+            TempData["MensajeExito"] =
+                mensaje;
         }
         else
         {
-            TempData["MensajeError"] = mensaje;
+            TempData["MensajeError"] =
+                mensaje;
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            nameof(Index));
+    }
+
+    private async Task PrepararCrearViewModelAsync(
+        EjemplarCreateViewModel viewModel)
+    {
+        viewModel.MaterialesBibliograficos =
+            await ObtenerMaterialesBibliograficosAsync(
+                viewModel.Ejemplar
+                    .IdMaterialBibliografico);
+
+        viewModel.Estados =
+            ObtenerEstadosCreacion(
+                viewModel.Ejemplar.Estado);
+
+        (string? ultimoCodigo, string siguienteCodigo) =
+            await _ejemplarService
+                .ObtenerInformacionCodigosAsync();
+
+        viewModel.UltimoCodigoRegistrado =
+            ultimoCodigo;
+
+        viewModel.SiguienteCodigoSugerido =
+            siguienteCodigo;
+    }
+
+    private async Task PrepararEditarViewModelAsync(
+        EjemplarEditViewModel viewModel)
+    {
+        viewModel.MaterialesBibliograficos =
+            await ObtenerMaterialesBibliograficosAsync(
+                viewModel.Ejemplar
+                    .IdMaterialBibliografico);
+
+        viewModel.Estados =
+            ObtenerEstadosEdicion(
+                viewModel.Ejemplar.Estado);
     }
 
     private async Task<List<SelectListItem>>
@@ -224,7 +269,8 @@ public class EjemplarController : Controller
             .Select(x => new SelectListItem
             {
                 Value =
-                    x.IdMaterialBibliografico.ToString(),
+                    x.IdMaterialBibliografico
+                        .ToString(),
 
                 Text =
                     $"{x.NumeroFicha} - {x.Titulo}",
@@ -236,22 +282,57 @@ public class EjemplarController : Controller
             .ToList();
     }
 
-    private static List<SelectListItem> ObtenerEstados(
-        EstadoEjemplar? estadoSeleccionado = null)
+    private static List<SelectListItem>
+        ObtenerEstadosCreacion(
+            EstadoEjemplar? estadoSeleccionado = null)
     {
-        return Enum
-            .GetValues<EstadoEjemplar>()
-            .Select(estado => new SelectListItem
-            {
-                Value = ((int)estado).ToString(),
+        EstadoEjemplar[] estadosPermitidos =
+        [
+            EstadoEjemplar.Disponible,
+            EstadoEjemplar.Mantenimiento,
+            EstadoEjemplar.FueraDeServicio
+        ];
 
-                Text = ObtenerNombreEstado(estado),
+        return estadosPermitidos
+            .Select(estado =>
+                new SelectListItem
+                {
+                    Value =
+                        ((int)estado).ToString(),
 
-                Selected =
-                    estadoSeleccionado.HasValue &&
-                    estado == estadoSeleccionado.Value
-            })
+                    Text =
+                        ObtenerNombreEstado(
+                            estado),
+
+                    Selected =
+                        estadoSeleccionado.HasValue &&
+                        estado ==
+                            estadoSeleccionado.Value
+                })
             .ToList();
+    }
+
+    private static List<SelectListItem>
+        ObtenerEstadosEdicion(
+            EstadoEjemplar estadoSeleccionado)
+    {
+        /*
+         * Prestado no se ofrece como una opción
+         * seleccionable manualmente.
+         *
+         * Si el ejemplar ya está prestado,
+         * el modal mostrará el estado como
+         * solo lectura.
+         */
+
+        if (estadoSeleccionado ==
+            EstadoEjemplar.Prestado)
+        {
+            return [];
+        }
+
+        return ObtenerEstadosCreacion(
+            estadoSeleccionado);
     }
 
     private static string ObtenerNombreEstado(

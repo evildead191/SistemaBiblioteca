@@ -100,4 +100,21 @@ public class EjemplarRepository : IEjemplarRepository
     {
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<string>>
+    ObtenerCodigosBarrasAsync()
+    {
+        return await _context.Ejemplares
+            .AsNoTracking()
+            .Select(x => x.CodigoBarras)
+            .OrderBy(x => x)
+            .ToListAsync();
+    }
+
+    public async Task AgregarRangoAsync(
+        IEnumerable<Ejemplar> ejemplares)
+    {
+        await _context.Ejemplares
+            .AddRangeAsync(ejemplares);
+    }
 }

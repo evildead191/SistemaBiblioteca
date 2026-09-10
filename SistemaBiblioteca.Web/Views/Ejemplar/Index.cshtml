@@ -657,26 +657,189 @@
 
             function inicializarValidacion() {
 
-                if (!window.jQuery) {
-                    return;
+                if (window.jQuery) {
+
+                    const formulario =
+                        contenidoModal.querySelector("form");
+
+                    if (formulario) {
+
+                        $(formulario)
+                            .removeData("validator")
+                            .removeData(
+                                "unobtrusiveValidation"
+                            );
+
+                        $.validator
+                            .unobtrusive
+                            .parse(formulario);
+                    }
                 }
 
+                inicializarFormularioCrearEjemplar();
+            }
+
+            function inicializarFormularioCrearEjemplar() {
+
                 const formulario =
-                    contenidoModal.querySelector("form");
+                    contenidoModal.querySelector(
+                        "#formCrearEjemplar"
+                    );
 
                 if (!formulario) {
                     return;
                 }
 
-                $(formulario)
-                    .removeData("validator")
-                    .removeData(
-                        "unobtrusiveValidation"
+                const cantidad =
+                    formulario.querySelector(
+                        "#cantidadEjemplares"
                     );
 
-                $.validator
-                    .unobtrusive
-                    .parse(formulario);
+                const generarAutomaticamente =
+                    formulario.querySelector(
+                        "#generarCodigosAutomaticamente"
+                    );
+
+                const codigo =
+                    formulario.querySelector(
+                        "#codigoBarrasEjemplar"
+                    );
+
+                const numeroInscripcion =
+                    formulario.querySelector(
+                        "#numeroInscripcionEjemplar"
+                    );
+
+                const contenedorNumeroInscripcion =
+                    formulario.querySelector(
+                        "#contenedorNumeroInscripcion"
+                    );
+
+                const informacionCodigos =
+                    formulario.querySelector(
+                        "#informacionCodigosAutomaticos"
+                    );
+
+                const labelCodigo =
+                    formulario.querySelector(
+                        "#labelCodigoBarras"
+                    );
+
+                const ayudaCodigo =
+                    formulario.querySelector(
+                        "#ayudaCodigoBarras"
+                    );
+
+                const textoBoton =
+                    formulario.querySelector(
+                        "#textoBotonRegistrarEjemplar"
+                    );
+
+                function actualizarFormulario() {
+
+                    const cantidadActual =
+                        Math.max(
+                            1,
+                            parseInt(
+                                cantidad?.value ?? "1"
+                            ) || 1
+                        );
+
+                    const generar =
+                        generarAutomaticamente?.checked
+                        ?? false;
+
+                    if (informacionCodigos) {
+                        informacionCodigos.classList.toggle(
+                            "d-none",
+                            !generar
+                        );
+                    }
+
+                    if (labelCodigo) {
+                        labelCodigo.innerHTML =
+                            generar
+                                ? `Código base
+                               <span class="text-danger">*</span>`
+                                : `Código de barras
+                               <span class="text-danger">*</span>`;
+                    }
+
+                    if (codigo) {
+
+                        codigo.placeholder =
+                            generar
+                                ? "Ejemplo: EJ"
+                                : "Ejemplo: EJ-0001";
+                    }
+
+                    if (ayudaCodigo) {
+
+                        ayudaCodigo.textContent =
+                            generar
+                                ? "El sistema generará códigos consecutivos a partir de esta base."
+                                : "Ingrese el código exacto que tendrá el ejemplar.";
+                    }
+
+                    const varios =
+                        cantidadActual > 1;
+
+                    if (numeroInscripcion) {
+
+                        numeroInscripcion.disabled =
+                            varios;
+
+                        if (varios) {
+                            numeroInscripcion.value = "";
+                        }
+                    }
+
+                    if (contenedorNumeroInscripcion) {
+
+                        contenedorNumeroInscripcion.classList.toggle(
+                            "opacity-50",
+                            varios
+                        );
+                    }
+
+                    if (
+                        cantidad &&
+                        !generar &&
+                        varios
+                    ) {
+                        cantidad.value = "1";
+                    }
+
+                    if (textoBoton) {
+
+                        textoBoton.textContent =
+                            cantidadActual > 1
+                                ? `Registrar ${cantidadActual} ejemplares`
+                                : "Registrar ejemplar";
+                    }
+                }
+
+                cantidad?.addEventListener(
+                    "input",
+                    actualizarFormulario
+                );
+
+                generarAutomaticamente?.addEventListener(
+                    "change",
+                    function() {
+
+                        if (
+                            !generarAutomaticamente.checked &&
+                            parseInt(cantidad?.value ?? "1") > 1
+                        ) {
+                            cantidad.value = "1";
+                        }
+
+                        actualizarFormulario();
+                    }
+                );
+
+                actualizarFormulario();
             }
 
             modalElemento.addEventListener(

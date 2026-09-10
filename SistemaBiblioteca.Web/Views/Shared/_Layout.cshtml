@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using SistemaBiblioteca.Entities.Models
+
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -44,6 +49,30 @@
                         StringComparison.OrdinalIgnoreCase))
                 ? "active"
                 : string.Empty;
+        }
+
+        ApplicationUser? usuarioActual = null;
+        string nombreUsuario = string.Empty;
+
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            usuarioActual =
+                await UserManager.GetUserAsync(User);
+
+            if (usuarioActual is not null)
+            {
+                nombreUsuario =
+                    $"{usuarioActual.Nombre} {usuarioActual.PrimerApellido}"
+                        .Trim();
+
+                if (string.IsNullOrWhiteSpace(nombreUsuario))
+                {
+                    nombreUsuario =
+                        usuarioActual.Email
+                        ?? usuarioActual.UserName
+                        ?? "Usuario";
+                }
+            }
         }
     }
 
@@ -144,6 +173,74 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link biblioteca-nav-link
+                                @ObtenerClaseActiva("Reporte")"
+                               asp-controller="Reporte"
+                               asp-action="Index">
+
+                                <i class="bi bi-bar-chart-line me-1"></i>
+                                Reportes
+                            </a>
+                        </li>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown ms-lg-2">
+
+                                <button class="nav-link biblioteca-nav-link dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    @nombreUsuario
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                                    <li>
+                                        <div class="px-3 py-2">
+
+                                            <div class="fw-semibold">
+                                                @nombreUsuario
+                                            </div>
+
+                                            <div class="small text-muted">
+                                                @usuarioActual?.Email
+                                            </div>
+
+                                            <div class="small text-muted">
+                                                Administrador
+                                            </div>
+
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+
+                                    <li>
+                                        <form asp-controller="Account"
+                                              asp-action="Logout"
+                                              method="post">
+
+                                            <button type="submit"
+                                                    class="dropdown-item">
+
+                                                <i class="bi bi-box-arrow-right me-2"></i>
+                                                Cerrar sesión
+
+                                            </button>
+
+                                        </form>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+
                     </ul>
 
                 </div>
@@ -192,6 +289,21 @@
             </div>
         </div>
     </footer>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form id="formLogoutInactividad"
+              asp-controller="Account"
+              asp-action="Logout"
+              method="post"
+              class="d-none">
+
+            <input type="hidden"
+                   name="motivo"
+                   value="" />
+
+        </form>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 

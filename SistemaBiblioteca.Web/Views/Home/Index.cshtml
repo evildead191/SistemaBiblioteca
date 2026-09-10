@@ -7,6 +7,7 @@
 <div class="dashboard-page">
 
     <section class="dashboard-hero">
+
         <div class="container">
 
             <div class="dashboard-hero-content">
@@ -24,26 +25,27 @@
                     </h1>
 
                     <p>
-                        Administre el catálogo, los ejemplares y la circulación
-                        de materiales de la Escuela Reverendo Francisco Schmitz.
+                        Administre el catálogo, los ejemplares, los usuarios
+                        y la circulación de materiales de la
+                        Escuela Reverendo Francisco Schmitz.
                     </p>
 
                     <div class="dashboard-hero-actions">
 
-                        <a asp-controller="MaterialBibliografico"
+                        <a asp-controller="Prestamo"
                            asp-action="Index"
                            class="btn btn-light dashboard-hero-button">
 
-                            <i class="bi bi-book me-2"></i>
-                            Consultar catálogo
+                            <i class="bi bi-arrow-left-right me-2"></i>
+                            Gestionar préstamos
                         </a>
 
-                        <a asp-controller="Ejemplar"
+                        <a asp-controller="Reporte"
                            asp-action="Index"
                            class="btn btn-outline-light dashboard-hero-button">
 
-                            <i class="bi bi-journals me-2"></i>
-                            Administrar ejemplares
+                            <i class="bi bi-bar-chart-line me-2"></i>
+                            Consultar reportes
                         </a>
 
                     </div>
@@ -63,6 +65,7 @@
             </div>
 
         </div>
+
     </section>
 
     <div class="container dashboard-container">
@@ -72,6 +75,7 @@
             <div class="dashboard-section-heading">
 
                 <div>
+
                     <span class="dashboard-section-label">
                         Resumen general
                     </span>
@@ -82,6 +86,7 @@
                         Información actualizada con los registros almacenados
                         en la base de datos.
                     </p>
+
                 </div>
 
                 <span class="dashboard-live-badge">
@@ -105,7 +110,9 @@
                                 <i class="bi bi-book"></i>
                             </div>
 
-                            <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+                            <i class="bi bi-arrow-up-right
+                                dashboard-stat-arrow">
+                            </i>
 
                         </div>
 
@@ -137,7 +144,9 @@
                                 <i class="bi bi-journals"></i>
                             </div>
 
-                            <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+                            <i class="bi bi-arrow-up-right
+                                dashboard-stat-arrow">
+                            </i>
 
                         </div>
 
@@ -159,31 +168,32 @@
 
                 <div class="col-12 col-sm-6 col-xl-3">
 
-                    <a asp-controller="Ejemplar"
+                    <a asp-controller="UsuarioBiblioteca"
                        asp-action="Index"
-                       asp-route-busqueda=""
                        class="dashboard-stat-card dashboard-stat-mint">
 
                         <div class="dashboard-stat-top">
 
                             <div class="dashboard-stat-icon">
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-people"></i>
                             </div>
 
-                            <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+                            <i class="bi bi-arrow-up-right
+                                dashboard-stat-arrow">
+                            </i>
 
                         </div>
 
                         <div class="dashboard-stat-value">
-                            @Model.EjemplaresDisponibles
+                            @Model.UsuariosRegistrados
                         </div>
 
                         <div class="dashboard-stat-title">
-                            Ejemplares disponibles
+                            Usuarios registrados
                         </div>
 
                         <div class="dashboard-stat-description">
-                            Recursos habilitados para préstamo
+                            Personas registradas en el sistema
                         </div>
 
                     </a>
@@ -192,7 +202,9 @@
 
                 <div class="col-12 col-sm-6 col-xl-3">
 
-                    <div class="dashboard-stat-card dashboard-stat-purple">
+                    <a asp-controller="Prestamo"
+                       asp-action="Index"
+                       class="dashboard-stat-card dashboard-stat-purple">
 
                         <div class="dashboard-stat-top">
 
@@ -200,25 +212,25 @@
                                 <i class="bi bi-arrow-left-right"></i>
                             </div>
 
-                            <span class="dashboard-stat-status">
-                                Actual
-                            </span>
+                            <i class="bi bi-arrow-up-right
+                                dashboard-stat-arrow">
+                            </i>
 
                         </div>
 
                         <div class="dashboard-stat-value">
-                            @Model.EjemplaresPrestados
+                            @Model.PrestamosActivos
                         </div>
 
                         <div class="dashboard-stat-title">
-                            Ejemplares prestados
+                            Préstamos activos
                         </div>
 
                         <div class="dashboard-stat-description">
-                            Recursos actualmente fuera de biblioteca
+                            Ejemplares pendientes de devolución
                         </div>
 
-                    </div>
+                    </a>
 
                 </div>
 
@@ -231,23 +243,25 @@
             <div class="dashboard-section-heading">
 
                 <div>
+
                     <span class="dashboard-section-label">
                         Accesos directos
                     </span>
 
-                    <h2>Acciones rápidas</h2>
+                    <h2>Módulos principales</h2>
 
                     <p>
-                        Ingrese directamente a las principales funciones
+                        Acceda rápidamente a las funciones principales
                         del sistema.
                     </p>
+
                 </div>
 
             </div>
 
             <div class="row g-4">
 
-                <div class="col-12 col-md-6 col-xl-3">
+                <div class="col-12 col-md-6 col-xl-4">
 
                     <a asp-controller="MaterialBibliografico"
                        asp-action="Index"
@@ -262,8 +276,8 @@
                             <h3>Catálogo bibliográfico</h3>
 
                             <p>
-                                Consulte, registre y edite los materiales
-                                disponibles en la biblioteca.
+                                Registre, consulte y actualice los materiales
+                                bibliográficos de la institución.
                             </p>
 
                             <span>
@@ -277,7 +291,7 @@
 
                 </div>
 
-                <div class="col-12 col-md-6 col-xl-3">
+                <div class="col-12 col-md-6 col-xl-4">
 
                     <a asp-controller="Ejemplar"
                        asp-action="Index"
@@ -292,8 +306,8 @@
                             <h3>Ejemplares</h3>
 
                             <p>
-                                Gestione códigos de barras, disponibilidad
-                                y ubicación de cada copia.
+                                Gestione copias, códigos, disponibilidad
+                                y estados de los ejemplares.
                             </p>
 
                             <span>
@@ -307,65 +321,93 @@
 
                 </div>
 
-                <div class="col-12 col-md-6 col-xl-3">
+                <div class="col-12 col-md-6 col-xl-4">
 
-                    <div class="dashboard-action-card dashboard-action-disabled">
+                    <a asp-controller="UsuarioBiblioteca"
+                       asp-action="Index"
+                       class="dashboard-action-card">
 
                         <div class="dashboard-action-icon action-gold">
-                            <i class="bi bi-person-check"></i>
+                            <i class="bi bi-people"></i>
                         </div>
 
                         <div class="dashboard-action-content">
 
-                            <div class="dashboard-action-badge">
-                                Próximamente
-                            </div>
-
-                            <h3>Registrar préstamo</h3>
+                            <h3>Usuarios</h3>
 
                             <p>
-                                Controle la entrega de materiales y las fechas
-                                previstas para su devolución.
+                                Administre estudiantes, docentes
+                                y personal registrado.
                             </p>
 
                             <span>
-                                Módulo pendiente
+                                Abrir módulo
+                                <i class="bi bi-arrow-right ms-1"></i>
                             </span>
 
                         </div>
 
-                    </div>
+                    </a>
 
                 </div>
 
-                <div class="col-12 col-md-6 col-xl-3">
+                <div class="col-12 col-md-6 col-xl-4">
 
-                    <div class="dashboard-action-card dashboard-action-disabled">
+                    <a asp-controller="Prestamo"
+                       asp-action="Index"
+                       class="dashboard-action-card">
 
                         <div class="dashboard-action-icon action-purple">
-                            <i class="bi bi-arrow-return-left"></i>
+                            <i class="bi bi-arrow-left-right"></i>
                         </div>
 
                         <div class="dashboard-action-content">
 
-                            <div class="dashboard-action-badge">
-                                Próximamente
-                            </div>
-
-                            <h3>Registrar devolución</h3>
+                            <h3>Préstamos y devoluciones</h3>
 
                             <p>
-                                Actualice el estado de los ejemplares devueltos
-                                a la institución.
+                                Registre préstamos, devoluciones
+                                y controle los atrasos.
                             </p>
 
                             <span>
-                                Módulo pendiente
+                                Abrir módulo
+                                <i class="bi bi-arrow-right ms-1"></i>
                             </span>
 
                         </div>
 
-                    </div>
+                    </a>
+
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-4">
+
+                    <a asp-controller="Reporte"
+                       asp-action="Index"
+                       class="dashboard-action-card">
+
+                        <div class="dashboard-action-icon action-green">
+                            <i class="bi bi-bar-chart-line"></i>
+                        </div>
+
+                        <div class="dashboard-action-content">
+
+                            <h3>Centro de Reportes</h3>
+
+                            <p>
+                                Consulte información consolidada
+                                y exporte resultados a Excel.
+                            </p>
+
+                            <span>
+                                Abrir módulo
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </span>
+
+                        </div>
+
+                    </a>
 
                 </div>
 
@@ -384,14 +426,18 @@
                         <div class="dashboard-panel-header">
 
                             <div>
+
                                 <span class="dashboard-section-label">
-                                    Estado del desarrollo
+                                    Estado actual
                                 </span>
 
                                 <h2>Módulos del sistema</h2>
+
                             </div>
 
-                            <i class="bi bi-grid dashboard-panel-header-icon"></i>
+                            <i class="bi bi-grid
+                                dashboard-panel-header-icon">
+                            </i>
 
                         </div>
 
@@ -399,22 +445,29 @@
 
                             <div class="dashboard-module-item">
 
-                                <div class="dashboard-module-icon module-complete">
+                                <div class="dashboard-module-icon
+                                    module-complete">
+
                                     <i class="bi bi-check-lg"></i>
                                 </div>
 
                                 <div class="dashboard-module-info">
 
                                     <div>
-                                        <h3>Catálogo bibliográfico</h3>
+
+                                        <h3>
+                                            Catálogo bibliográfico
+                                        </h3>
 
                                         <p>
-                                            Registro, búsqueda, edición y control
-                                            del material bibliográfico.
+                                            Registro, búsqueda y mantenimiento
+                                            de materiales.
                                         </p>
+
                                     </div>
 
-                                    <span class="dashboard-module-badge badge-complete">
+                                    <span class="dashboard-module-badge
+                                        badge-complete">
                                         Implementado
                                     </span>
 
@@ -424,22 +477,29 @@
 
                             <div class="dashboard-module-item">
 
-                                <div class="dashboard-module-icon module-complete">
+                                <div class="dashboard-module-icon
+                                    module-complete">
+
                                     <i class="bi bi-check-lg"></i>
                                 </div>
 
                                 <div class="dashboard-module-info">
 
                                     <div>
-                                        <h3>Gestión de ejemplares</h3>
+
+                                        <h3>
+                                            Gestión de ejemplares
+                                        </h3>
 
                                         <p>
-                                            Administración de copias físicas,
-                                            códigos y estados de circulación.
+                                            Registro individual y múltiple,
+                                            códigos y disponibilidad.
                                         </p>
+
                                     </div>
 
-                                    <span class="dashboard-module-badge badge-complete">
+                                    <span class="dashboard-module-badge
+                                        badge-complete">
                                         Implementado
                                     </span>
 
@@ -449,23 +509,30 @@
 
                             <div class="dashboard-module-item">
 
-                                <div class="dashboard-module-icon module-progress">
-                                    <i class="bi bi-hourglass-split"></i>
+                                <div class="dashboard-module-icon
+                                    module-complete">
+
+                                    <i class="bi bi-check-lg"></i>
                                 </div>
 
                                 <div class="dashboard-module-info">
 
                                     <div>
-                                        <h3>Préstamos y devoluciones</h3>
+
+                                        <h3>
+                                            Administración de usuarios
+                                        </h3>
 
                                         <p>
-                                            Control de salidas, fechas de entrega
-                                            y devolución de ejemplares.
+                                            Registro, edición y control
+                                            de usuarios de la biblioteca.
                                         </p>
+
                                     </div>
 
-                                    <span class="dashboard-module-badge badge-progress">
-                                        Pendiente
+                                    <span class="dashboard-module-badge
+                                        badge-complete">
+                                        Implementado
                                     </span>
 
                                 </div>
@@ -474,23 +541,62 @@
 
                             <div class="dashboard-module-item">
 
-                                <div class="dashboard-module-icon module-pending">
-                                    <i class="bi bi-circle"></i>
+                                <div class="dashboard-module-icon
+                                    module-complete">
+
+                                    <i class="bi bi-check-lg"></i>
                                 </div>
 
                                 <div class="dashboard-module-info">
 
                                     <div>
-                                        <h3>Personas y reportes</h3>
+
+                                        <h3>
+                                            Préstamos y devoluciones
+                                        </h3>
 
                                         <p>
-                                            Registro de usuarios, historial y
-                                            generación de reportes administrativos.
+                                            Control de circulación, fechas
+                                            y atrasos.
                                         </p>
+
                                     </div>
 
-                                    <span class="dashboard-module-badge badge-pending">
-                                        Futuro
+                                    <span class="dashboard-module-badge
+                                        badge-complete">
+                                        Implementado
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="dashboard-module-item">
+
+                                <div class="dashboard-module-icon
+                                    module-complete">
+
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+
+                                <div class="dashboard-module-info">
+
+                                    <div>
+
+                                        <h3>
+                                            Centro de Reportes
+                                        </h3>
+
+                                        <p>
+                                            Consultas administrativas
+                                            y exportación a Excel.
+                                        </p>
+
+                                    </div>
+
+                                    <span class="dashboard-module-badge
+                                        badge-complete">
+                                        Implementado
                                     </span>
 
                                 </div>
@@ -505,19 +611,23 @@
 
                 <div class="col-12 col-xl-4">
 
-                    <div class="dashboard-panel dashboard-future-panel">
+                    <div class="dashboard-panel">
 
                         <div class="dashboard-panel-header">
 
                             <div>
+
                                 <span class="dashboard-section-label">
-                                    Preparado para crecer
+                                    Circulación actual
                                 </span>
 
-                                <h2>Indicadores futuros</h2>
+                                <h2>Estado de la biblioteca</h2>
+
                             </div>
 
-                            <i class="bi bi-bar-chart dashboard-panel-header-icon"></i>
+                            <i class="bi bi-activity
+                                dashboard-panel-header-icon">
+                            </i>
 
                         </div>
 
@@ -526,11 +636,26 @@
                             <div class="dashboard-future-item">
 
                                 <span>
-                                    <i class="bi bi-arrow-left-right"></i>
-                                    Préstamos activos
+                                    <i class="bi bi-check-circle"></i>
+                                    Ejemplares disponibles
                                 </span>
 
-                                <strong>@Model.PrestamosActivos</strong>
+                                <strong>
+                                    @Model.EjemplaresDisponibles
+                                </strong>
+
+                            </div>
+
+                            <div class="dashboard-future-item">
+
+                                <span>
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    Ejemplares prestados
+                                </span>
+
+                                <strong>
+                                    @Model.EjemplaresPrestados
+                                </strong>
 
                             </div>
 
@@ -538,32 +663,25 @@
 
                                 <span>
                                     <i class="bi bi-exclamation-triangle"></i>
-                                    Préstamos vencidos
+                                    Préstamos atrasados
                                 </span>
 
-                                <strong>@Model.PrestamosVencidos</strong>
+                                <strong>
+                                    @Model.PrestamosAtrasados
+                                </strong>
 
                             </div>
 
                             <div class="dashboard-future-item">
 
                                 <span>
-                                    <i class="bi bi-people"></i>
-                                    Personas registradas
+                                    <i class="bi bi-person-check"></i>
+                                    Usuarios activos
                                 </span>
 
-                                <strong>@Model.PersonasRegistradas</strong>
-
-                            </div>
-
-                            <div class="dashboard-future-item">
-
-                                <span>
-                                    <i class="bi bi-arrow-return-left"></i>
-                                    Devoluciones pendientes
-                                </span>
-
-                                <strong>@Model.DevolucionesPendientes</strong>
+                                <strong>
+                                    @Model.UsuariosActivos
+                                </strong>
 
                             </div>
 
@@ -574,8 +692,9 @@
                             <i class="bi bi-info-circle"></i>
 
                             <p>
-                                Estos indicadores se conectarán automáticamente
-                                conforme se implementen los módulos restantes.
+                                Los indicadores se actualizan automáticamente
+                                conforme se registran préstamos, devoluciones,
+                                ejemplares y usuarios.
                             </p>
 
                         </div>
@@ -603,13 +722,14 @@
                     Escuela Reverendo Francisco Schmitz
                 </span>
 
-                <h2>Conocimiento, cultura y organización</h2>
+                <h2>
+                    Conocimiento, cultura y organización
+                </h2>
 
                 <p>
-                    Este sistema facilita la gestión de los recursos
-                    bibliográficos de la institución, permitiendo mantener
-                    información organizada, accesible y preparada para apoyar
-                    los procesos educativos.
+                    El sistema centraliza la gestión de los recursos
+                    bibliográficos de la institución y facilita el control
+                    de materiales, usuarios, préstamos y reportes.
                 </p>
 
             </div>
@@ -628,7 +748,7 @@
 
                 <span>
                     <i class="bi bi-people"></i>
-                    Honor
+                    Comunidad
                 </span>
 
             </div>

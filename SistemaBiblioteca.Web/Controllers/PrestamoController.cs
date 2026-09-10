@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaBiblioteca.Business.DTOs.Prestamo;
 using SistemaBiblioteca.Business.Interfaces;
@@ -8,6 +9,7 @@ using SistemaBiblioteca.Web.ViewModels.Prestamo;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class PrestamoController : Controller
 {
     private readonly IPrestamoService _prestamoService;

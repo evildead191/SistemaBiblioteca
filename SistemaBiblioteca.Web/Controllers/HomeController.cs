@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaBiblioteca.Business.Interfaces;
 using SistemaBiblioteca.Entities.Enums;
@@ -5,6 +6,7 @@ using SistemaBiblioteca.Web.ViewModels.Home;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class HomeController : Controller
 {
     private readonly IMaterialBibliograficoService
@@ -42,20 +44,28 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         int totalMateriales =
-            await _materialBibliograficoService.ContarAsync();
+            await _materialBibliograficoService
+                .ContarAsync();
 
         int totalEjemplares =
-            await _ejemplarService.ContarAsync();
+            await _ejemplarService
+                .ContarAsync();
 
         int ejemplaresDisponibles =
-            await _ejemplarService.ContarPorEstadoAsync(
-                EstadoEjemplar.Disponible);
+            await _ejemplarService
+                .ContarPorEstadoAsync(
+                    EstadoEjemplar.Disponible);
 
         int ejemplaresPrestados =
-            await _ejemplarService.ContarPorEstadoAsync(
-                EstadoEjemplar.Prestado);
+            await _ejemplarService
+                .ContarPorEstadoAsync(
+                    EstadoEjemplar.Prestado);
 
-        int personasRegistradas =
+        int usuariosRegistrados =
+            await _usuarioBibliotecaService
+                .ContarUsuariosAsync();
+
+        int usuariosActivos =
             await _usuarioBibliotecaService
                 .ContarUsuariosActivosAsync();
 
@@ -69,9 +79,11 @@ public class HomeController : Controller
 
         DashboardViewModel viewModel = new()
         {
-            TotalMateriales = totalMateriales,
+            TotalMateriales =
+                totalMateriales,
 
-            TotalEjemplares = totalEjemplares,
+            TotalEjemplares =
+                totalEjemplares,
 
             EjemplaresDisponibles =
                 ejemplaresDisponibles,
@@ -79,17 +91,17 @@ public class HomeController : Controller
             EjemplaresPrestados =
                 ejemplaresPrestados,
 
-            PersonasRegistradas =
-                personasRegistradas,
+            UsuariosRegistrados =
+                usuariosRegistrados,
+
+            UsuariosActivos =
+                usuariosActivos,
 
             PrestamosActivos =
                 prestamosActivos,
 
-            PrestamosVencidos =
-                prestamosAtrasados,
-
-            DevolucionesPendientes =
-                prestamosActivos
+            PrestamosAtrasados =
+                prestamosAtrasados
         };
 
         return View(viewModel);

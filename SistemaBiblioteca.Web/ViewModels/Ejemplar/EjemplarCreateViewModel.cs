@@ -5,9 +5,16 @@ namespace SistemaBiblioteca.Web.ViewModels.Ejemplar;
 
 public class EjemplarCreateViewModel
 {
-    public EjemplarCreateDto Ejemplar { get; set; } = new();
+    public EjemplarCreateDto Ejemplar { get; set; }
+        = new();
 
-    public List<SelectListItem> MaterialesBibliograficos { get; set; } = [];
+    public List<SelectListItem> MaterialesBibliograficos { get; set; }
+        = [];
 
-    public List<SelectListItem> Estados { get; set; } = [];
+    public List<SelectListItem> Estados { get; set; }
+        = [];
+
+    public string? UltimoCodigoRegistrado { get; set; }
+
+    public string? SiguienteCodigoSugerido { get; set; }
 }

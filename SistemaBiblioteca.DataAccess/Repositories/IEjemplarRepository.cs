@@ -14,10 +14,15 @@ public interface IEjemplarRepository
         string codigoBarras,
         int? idExcluir = null);
 
+    Task<List<string>> ObtenerCodigosBarrasAsync();
+
     Task<bool> ExisteMaterialBibliograficoAsync(
         int idMaterialBibliografico);
 
     Task AgregarAsync(Ejemplar ejemplar);
+
+    Task AgregarRangoAsync(
+        IEnumerable<Ejemplar> ejemplares);
 
     void Actualizar(Ejemplar ejemplar);
 

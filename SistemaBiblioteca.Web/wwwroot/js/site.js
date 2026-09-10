@@ -91,3 +91,68 @@
         }
     }
 };
+
+
+/*
+ * Control de inactividad de la sesión.
+ */
+(() => {
+    const formularioLogout =
+        document.getElementById("formLogoutInactividad");
+
+    if (!formularioLogout) {
+        return;
+    }
+
+    // TEMPORAL PARA PRUEBAS: 15 minutos.
+const tiempoMaximoInactividad = 15 * 60 * 1000;
+    let temporizadorInactividad;
+    let cerrandoSesion = false;
+
+    function cerrarSesionPorInactividad() {
+        if (cerrandoSesion) {
+            return;
+        }
+
+        cerrandoSesion = true;
+
+        const campoMotivo =
+            formularioLogout.querySelector(
+                'input[name="motivo"]');
+
+        if (campoMotivo) {
+            campoMotivo.value = "inactividad";
+        }
+
+        formularioLogout.submit();
+    }
+
+    function reiniciarTemporizador() {
+        if (cerrandoSesion) {
+            return;
+        }
+
+        clearTimeout(temporizadorInactividad);
+
+        temporizadorInactividad =
+            setTimeout(
+                cerrarSesionPorInactividad,
+                tiempoMaximoInactividad);
+    }
+
+    const eventosActividad = [
+        "mousedown",
+        "keydown",
+        "touchstart",
+        "scroll"
+    ];
+
+    eventosActividad.forEach(evento => {
+        document.addEventListener(
+            evento,
+            reiniciarTemporizador,
+            { passive: true });
+    });
+
+    reiniciarTemporizador();
+})();

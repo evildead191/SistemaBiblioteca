@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaBiblioteca.Business.DTOs.UsuarioBiblioteca;
 using SistemaBiblioteca.Business.Interfaces;
@@ -7,6 +8,7 @@ using SistemaBiblioteca.Web.ViewModels.UsuarioBiblioteca;
 
 namespace SistemaBiblioteca.Web.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class UsuarioBibliotecaController : Controller
 {
     private readonly IUsuarioBibliotecaService

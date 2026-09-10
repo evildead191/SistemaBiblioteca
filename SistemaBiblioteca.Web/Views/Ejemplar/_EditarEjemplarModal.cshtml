@@ -1,5 +1,7 @@
 ﻿@model SistemaBiblioteca.Web.ViewModels.Ejemplar.EjemplarEditViewModel
 
+@using SistemaBiblioteca.Entities.Enums
+
 <form asp-controller="Ejemplar"
       asp-action="Editar"
       method="post"
@@ -13,6 +15,9 @@
     <input asp-for="Ejemplar.Activo"
            type="hidden" />
 
+    <input asp-for="Ejemplar.Biblioteca"
+           type="hidden" />
+
     <div class="modal-body">
 
         <div asp-validation-summary="ModelOnly"
@@ -20,14 +25,36 @@
              role="alert">
         </div>
 
+        @if (Model.Ejemplar.Estado ==
+            EstadoEjemplar.Prestado)
+        {
+            <div class="alert alert-warning
+                d-flex align-items-start
+                gap-2">
+
+                <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+
+                <div>
+                    Este ejemplar posee el estado
+                    <strong>Prestado</strong>.
+                    Su disponibilidad debe modificarse
+                    mediante el módulo de préstamos y
+                    devoluciones.
+                </div>
+
+            </div>
+        }
+
         <div class="row g-3">
 
             <div class="col-12 col-md-6">
 
                 <label asp-for="Ejemplar.CodigoBarras"
                        class="form-label">
+
                     Código de barras
                     <span class="text-danger">*</span>
+
                 </label>
 
                 <input asp-for="Ejemplar.CodigoBarras"
@@ -44,7 +71,9 @@
 
                 <label asp-for="Ejemplar.NumeroInscripcion"
                        class="form-label">
+
                     Número de inscripción
+
                 </label>
 
                 <input asp-for="Ejemplar.NumeroInscripcion"
@@ -61,8 +90,10 @@
 
                 <label asp-for="Ejemplar.IdMaterialBibliografico"
                        class="form-label">
+
                     Material bibliográfico
                     <span class="text-danger">*</span>
+
                 </label>
 
                 <select asp-for="Ejemplar.IdMaterialBibliografico"
@@ -85,14 +116,30 @@
 
                 <label asp-for="Ejemplar.Estado"
                        class="form-label">
+
                     Estado del ejemplar
                     <span class="text-danger">*</span>
+
                 </label>
 
-                <select asp-for="Ejemplar.Estado"
-                        asp-items="Model.Estados"
-                        class="form-select">
-                </select>
+                @if (Model.Ejemplar.Estado ==
+                    EstadoEjemplar.Prestado)
+                {
+                    <input asp-for="Ejemplar.Estado"
+                           type="hidden" />
+
+                    <input type="text"
+                           class="form-control"
+                           value="Prestado"
+                           readonly />
+                }
+                else
+                {
+                    <select asp-for="Ejemplar.Estado"
+                            asp-items="Model.Estados"
+                            class="form-select">
+                    </select>
+                }
 
                 <span asp-validation-for="Ejemplar.Estado"
                       class="text-danger">
@@ -102,8 +149,7 @@
 
             <div class="col-12 col-md-6">
 
-                <label asp-for="Ejemplar.Biblioteca"
-                       class="form-label">
+                <label class="form-label">
                     Biblioteca
                 </label>
 
@@ -111,18 +157,21 @@
                        value="Escuela Reverendo Francisco Schmitz"
                        readonly />
 
-                <span asp-validation-for="Ejemplar.Biblioteca"
-                      class="text-danger">
-                </span>
+                <div class="form-text">
+                    La biblioteca se asigna
+                    automáticamente por el sistema.
+                </div>
 
             </div>
 
         </div>
 
         <p class="small text-muted mt-3 mb-0">
+
             Los campos marcados con
             <span class="text-danger">*</span>
             son obligatorios.
+
         </p>
 
     </div>
@@ -141,6 +190,7 @@
 
             <i class="bi bi-floppy me-1"></i>
             Guardar cambios
+
         </button>
 
     </div>

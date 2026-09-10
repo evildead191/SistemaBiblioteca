@@ -10,12 +10,11 @@ public class DashboardViewModel
 
     public int EjemplaresPrestados { get; set; }
 
-    // Se conectarán cuando se implementen estos módulos.
+    public int UsuariosRegistrados { get; set; }
+
+    public int UsuariosActivos { get; set; }
+
     public int PrestamosActivos { get; set; }
 
-    public int PrestamosVencidos { get; set; }
-
-    public int PersonasRegistradas { get; set; }
-
-    public int DevolucionesPendientes { get; set; }
+    public int PrestamosAtrasados { get; set; }
 }

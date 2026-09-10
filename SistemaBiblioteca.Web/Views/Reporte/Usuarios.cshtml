@@ -6,244 +6,261 @@
 
 <div class="container py-4">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row
+        justify-content-between align-items-md-center
+        gap-3 mb-4">
 
         <div>
-
             <h2 class="fw-bold text-primary mb-1">
                 <i class="bi bi-people me-2"></i>
                 Reporte de Usuarios
             </h2>
 
             <p class="text-muted mb-0">
-                Consulte los usuarios registrados en el sistema.
+                Consulte los usuarios y su actividad de préstamos.
             </p>
-
         </div>
 
         <a asp-action="Index"
            class="btn btn-outline-secondary">
-
             <i class="bi bi-arrow-left me-1"></i>
             Volver
-
         </a>
 
     </div>
 
     <div class="card shadow-sm border-0 mb-4">
-
         <div class="card-body">
 
-            <form method="get">
+            <form method="get"
+                  asp-action="Usuarios">
 
                 <div class="row g-3">
 
                     <div class="col-lg-6">
-
-                        <label class="form-label">
+                        <label asp-for="Filtro.Busqueda"
+                               class="form-label">
                             Buscar
                         </label>
 
                         <input asp-for="Filtro.Busqueda"
                                class="form-control"
-                               placeholder="Nombre, identificación, correo..." />
-
+                               placeholder="Nombre, identificación, correo, teléfono..." />
                     </div>
 
-                    <div class="col-md-3">
-
-                        <label class="form-label">
-                            Tipo
+                    <div class="col-md-6 col-lg-3">
+                        <label asp-for="Filtro.TipoUsuario"
+                               class="form-label">
+                            Tipo de usuario
                         </label>
 
                         <select asp-for="Filtro.TipoUsuario"
                                 asp-items="Model.TiposUsuario"
                                 class="form-select">
                         </select>
-
                     </div>
 
-                    <div class="col-md-3">
-
-                        <label class="form-label">
-                            Estado
+                    <div class="col-md-6 col-lg-3">
+                        <label asp-for="Filtro.Activo"
+                               class="form-label">
+                            Estado del registro
                         </label>
 
                         <select asp-for="Filtro.Activo"
                                 asp-items="Model.EstadosRegistro"
                                 class="form-select">
                         </select>
-
                     </div>
 
                 </div>
 
-                <div class="d-flex gap-2 mt-4">
+                <div class="d-flex flex-wrap gap-2 mt-4">
 
-                    <button class="btn btn-primary">
-
+                    <button type="submit"
+                            class="btn btn-primary">
                         <i class="bi bi-search me-1"></i>
-
                         Buscar
-
                     </button>
 
                     <a asp-action="Usuarios"
                        class="btn btn-outline-secondary">
-
+                        <i class="bi bi-eraser me-1"></i>
                         Limpiar
-
                     </a>
 
-                    <button class="btn btn-success ms-auto"
-                            disabled>
-
+                    <a asp-action="ExportarUsuarios"
+                       asp-route-Busqueda="@Model.Filtro.Busqueda"
+                       asp-route-TipoUsuario="@Model.Filtro.TipoUsuario"
+                       asp-route-Activo="@Model.Filtro.Activo"
+                       class="btn btn-success ms-md-auto">
                         <i class="bi bi-file-earmark-excel me-1"></i>
-
                         Exportar Excel
-
-                    </button>
+                    </a>
 
                 </div>
 
             </form>
 
         </div>
-
     </div>
 
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
 
-        <div class="col">
-
-            <div class="dashboard-card">
-
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
                 <h3>@Model.TotalResultados</h3>
-
                 <span>Usuarios</span>
-
             </div>
-
         </div>
 
-        <div class="col">
-
-            <div class="dashboard-card">
-
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
                 <h3>@Model.UsuariosActivos</h3>
-
                 <span>Activos</span>
-
             </div>
-
         </div>
 
-        <div class="col">
-
-            <div class="dashboard-card">
-
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
                 <h3>@Model.UsuariosInactivos</h3>
-
                 <span>Inactivos</span>
-
             </div>
-
         </div>
 
-        <div class="col">
-
-            <div class="dashboard-card">
-
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
                 <h3>@Model.TotalPrestamos</h3>
-
-                <span>Préstamos</span>
-
+                <span>Préstamos totales</span>
             </div>
+        </div>
 
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
+                <h3>@Model.PrestamosActivos</h3>
+                <span>Préstamos activos</span>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg">
+            <div class="dashboard-card h-100">
+                <h3>@Model.PrestamosAtrasados</h3>
+                <span>Préstamos atrasados</span>
+            </div>
         </div>
 
     </div>
 
     <div class="card shadow-sm border-0">
 
-        <div class="table-responsive">
+        @if (Model.Usuarios.Count == 0)
+        {
+            <div class="card-body text-center py-5">
+                <i class="bi bi-search display-4 text-muted"></i>
 
-            <table class="table table-hover align-middle">
+                <h5 class="mt-3 mb-2">
+                    No se encontraron usuarios
+                </h5>
 
-                <thead class="table-light">
+                <p class="text-muted mb-0">
+                    Ajuste los filtros e intente nuevamente.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
 
-                    <tr>
+                <table class="table table-hover align-middle mb-0">
 
-                        <th>Identificación</th>
-
-                        <th>Nombre</th>
-
-                        <th>Tipo</th>
-
-                        <th>Correo</th>
-
-                        <th>Teléfono</th>
-
-                        <th>Préstamos</th>
-
-                        <th>Estado</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @foreach (var usuario in Model.Usuarios)
-                    {
+                    <thead class="table-light">
                         <tr>
-
-                            <td>@usuario.Identificacion</td>
-
-                            <td>@usuario.NombreCompleto</td>
-
-                            <td>@usuario.TipoUsuario</td>
-
-                            <td>@usuario.Correo</td>
-
-                            <td>@usuario.Telefono</td>
-
-                            <td>
-
-                                <span class="badge bg-primary">
-
-                                    @usuario.TotalPrestamos
-
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                @if (usuario.Activo)
-                                {
-                                    <span class="badge bg-success">
-                                        Activo
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">
-                                        Inactivo
-                                    </span>
-                                }
-
-                            </td>
-
+                            <th>Identificación</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Sección o departamento</th>
+                            <th>Contacto</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center">Activos</th>
+                            <th class="text-center">Atrasados</th>
+                            <th class="text-center">Estado</th>
                         </tr>
-                    }
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        @foreach (var usuario in Model.Usuarios)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@usuario.Identificacion</strong>
+                                </td>
 
-        </div>
+                                <td>@usuario.NombreCompleto</td>
+
+                                <td>@usuario.TipoUsuario</td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(
+                                        usuario.SeccionODepartamento)
+                                        ? "No indicado"
+                                        : usuario.SeccionODepartamento)
+                                </td>
+
+                                <td>
+                                    <div>
+                                        @(string.IsNullOrWhiteSpace(usuario.Correo)
+                                            ? "Sin correo"
+                                            : usuario.Correo)
+                                    </div>
+
+                                    <small class="text-muted">
+                                        @(string.IsNullOrWhiteSpace(usuario.Telefono)
+                                            ? "Sin teléfono"
+                                            : usuario.Telefono)
+                                    </small>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-primary">
+                                        @usuario.TotalPrestamos
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-info text-dark">
+                                        @usuario.PrestamosActivos
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-danger">
+                                        @usuario.PrestamosAtrasados
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    @if (usuario.Activo)
+                                    {
+                                        <span class="badge bg-success">
+                                            Activo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Inactivo
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
 
     </div>
 
