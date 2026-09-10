@@ -16,7 +16,9 @@ public class EjemplarRepository : IEjemplarRepository
     }
 
     public async Task<List<Ejemplar>> ObtenerTodosAsync(
-        string? busqueda = null)
+    string? busqueda = null,
+    int pagina = 1,
+    int tamanoPagina = 25)
     {
         IQueryable<Ejemplar> query =
             _context.Ejemplares
@@ -37,10 +39,39 @@ public class EjemplarRepository : IEjemplarRepository
                 x.MaterialBibliografico.NumeroFicha.Contains(criterio));
         }
 
+        pagina = Math.Max(pagina, 1);
+        tamanoPagina = Math.Max(tamanoPagina, 1);
+
         return await query
             .OrderBy(x => x.MaterialBibliografico.Titulo)
             .ThenBy(x => x.CodigoBarras)
+            .Skip((pagina - 1) * tamanoPagina)
+            .Take(tamanoPagina)
             .ToListAsync();
+    }
+
+    public async Task<int> ContarFiltradosAsync(
+    string? busqueda = null)
+    {
+        IQueryable<Ejemplar> query =
+            _context.Ejemplares
+                .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(busqueda))
+        {
+            string criterio = busqueda.Trim();
+
+            query = query.Where(x =>
+                x.CodigoBarras.Contains(criterio) ||
+                (x.NumeroInscripcion != null &&
+                 x.NumeroInscripcion.Contains(criterio)) ||
+                (x.Biblioteca != null &&
+                 x.Biblioteca.Contains(criterio)) ||
+                x.MaterialBibliografico.Titulo.Contains(criterio) ||
+                x.MaterialBibliografico.NumeroFicha.Contains(criterio));
+        }
+
+        return await query.CountAsync();
     }
 
     public async Task<Ejemplar?> ObtenerPorIdAsync(int id)

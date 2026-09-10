@@ -1478,3 +1478,147 @@ a.dashboard-action-card:hover {
     #modalEjemplar #contenidoModalEjemplar .modal-footer {
         flex-shrink: 0;
     }
+
+/* ================================
+   IMPORTACIÓN
+   ================================ */
+
+.importacion-header {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.archivo-importacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    max-width: 100%;
+}
+
+    .archivo-importacion span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.resumen-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+    .resumen-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.35rem 0.9rem rgba(0, 0, 0, 0.08);
+        color: inherit;
+    }
+
+    .resumen-card.activa {
+        border-color: #198754;
+        box-shadow: 0 0 0 1px #198754;
+    }
+
+.resumen-icono {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.65rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.icono-total {
+    background: #e9f2ff;
+    color: #0d6efd;
+}
+
+.icono-valido {
+    background: #eaf7ef;
+    color: #198754;
+}
+
+.icono-error {
+    background: #fdecec;
+    color: #dc3545;
+}
+
+.icono-existente {
+    background: #f1f3f5;
+    color: #6c757d;
+}
+
+.filtros-importacion,
+.tabla-importacion-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+}
+
+.tabla-importacion thead th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02rem;
+    white-space: nowrap;
+}
+
+.tabla-importacion tbody td {
+    vertical-align: middle;
+}
+
+.fila-error {
+    background-color: #fff6f6 !important;
+}
+
+.estado-validacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.estado-valido {
+    background: #e8f6ee;
+    color: #157347;
+}
+
+.estado-error {
+    background: #fce8ea;
+    color: #b02a37;
+}
+
+.estado-existente {
+    background: #eef0f2;
+    color: #5c636a;
+}
+
+.acciones-importacion {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    background: #f8f9fa;
+    padding: 1rem;
+}
+
+.modal-content-importacion {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@media (max-width: 767.98px) {
+    .acciones-importacion form,
+    .acciones-importacion button {
+        width: 100%;
+    }
+}

@@ -6,6 +6,11 @@ namespace SistemaBiblioteca.DataAccess.Repositories;
 public interface IEjemplarRepository
 {
     Task<List<Ejemplar>> ObtenerTodosAsync(
+        string? busqueda = null,
+        int pagina = 1,
+        int tamanoPagina = 25);
+
+    Task<int> ContarFiltradosAsync(
         string? busqueda = null);
 
     Task<Ejemplar?> ObtenerPorIdAsync(int id);

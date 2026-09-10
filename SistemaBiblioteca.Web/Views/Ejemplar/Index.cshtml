@@ -292,6 +292,110 @@
                     </table>
 
                 </div>
+
+                @if (Model.TotalRegistros > 0)
+                {
+                    int inicioRegistro =
+                        ((Model.PaginaActual - 1) *
+                        Model.TamanoPagina) + 1;
+
+                    int finRegistro =
+                        Math.Min(
+                            Model.PaginaActual * Model.TamanoPagina,
+                            Model.TotalRegistros);
+
+                    <div class="d-flex flex-column flex-md-row
+                        justify-content-between
+                        align-items-md-center
+                        gap-3 mt-4">
+
+                        <div class="text-muted small">
+                            Mostrando
+                            <strong>@inicioRegistro-@finRegistro</strong>
+                            de
+                            <strong>@Model.TotalRegistros</strong>
+                            ejemplares
+                        </div>
+
+                        @if (Model.TotalPaginas > 1)
+                        {
+                            <nav aria-label="Paginación de ejemplares">
+
+                                <ul class="pagination pagination-sm mb-0">
+
+                                    <li class="page-item
+                                        @(Model.PaginaActual <= 1
+                                            ? "disabled"
+                                            : "")">
+
+                                        <a class="page-link"
+                                           asp-controller="Ejemplar"
+                                           asp-action="Index"
+                                           asp-route-pagina="@(Model.PaginaActual - 1)"
+                                           asp-route-busqueda="@Model.Busqueda">
+
+                                            Anterior
+                                        </a>
+
+                                    </li>
+
+                                    @{
+                                        int paginaInicial =
+                                            Math.Max(
+                                                1,
+                                                Model.PaginaActual - 2);
+
+                                        int paginaFinal =
+                                            Math.Min(
+                                                Model.TotalPaginas,
+                                                Model.PaginaActual + 2);
+                                    }
+
+                                    @for (
+                                        int numeroPagina = paginaInicial;
+                                        numeroPagina <= paginaFinal;
+                                        numeroPagina++)
+                                    {
+                                        <li class="page-item
+                                            @(numeroPagina == Model.PaginaActual
+                                                ? "active"
+                                                : "")">
+
+                                            <a class="page-link"
+                                               asp-controller="Ejemplar"
+                                               asp-action="Index"
+                                               asp-route-pagina="@numeroPagina"
+                                               asp-route-busqueda="@Model.Busqueda">
+
+                                                @numeroPagina
+                                            </a>
+
+                                        </li>
+                                    }
+
+                                    <li class="page-item
+                                        @(Model.PaginaActual >= Model.TotalPaginas
+                                            ? "disabled"
+                                            : "")">
+
+                                        <a class="page-link"
+                                           asp-controller="Ejemplar"
+                                           asp-action="Index"
+                                           asp-route-pagina="@(Model.PaginaActual + 1)"
+                                           asp-route-busqueda="@Model.Busqueda">
+
+                                            Siguiente
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </nav>
+                        }
+
+                    </div>
+                }
             }
 
         </div>

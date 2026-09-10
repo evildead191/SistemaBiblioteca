@@ -23,14 +23,26 @@ public class EjemplarService : IEjemplarService
     }
 
     public async Task<List<EjemplarDto>> ObtenerTodosAsync(
-        string? busqueda = null)
+    string? busqueda = null,
+    int pagina = 1,
+    int tamanoPagina = 25)
     {
         List<Ejemplar> ejemplares =
-            await _repository.ObtenerTodosAsync(busqueda);
+            await _repository.ObtenerTodosAsync(
+                busqueda,
+                pagina,
+                tamanoPagina);
 
         return ejemplares
             .Select(MapearADto)
             .ToList();
+    }
+
+    public async Task<int> ContarFiltradosAsync(
+        string? busqueda = null)
+    {
+        return await _repository
+            .ContarFiltradosAsync(busqueda);
     }
 
     public async Task<EjemplarDto?> ObtenerPorIdAsync(

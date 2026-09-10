@@ -52,7 +52,7 @@ public class SistemaBibliotecaDbContext : IdentityDbContext<ApplicationUser>
                 .IsRequired();
 
             entity.Property(x => x.Autor)
-                .HasMaxLength(250)
+                .HasMaxLength(1000)
                 .IsRequired();
 
             entity.Property(x => x.Titulo)

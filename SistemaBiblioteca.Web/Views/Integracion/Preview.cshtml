@@ -1,0 +1,1015 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Integracion.IntegracionPreviewViewModel
+
+@{
+    ViewData["Title"] = "Vista previa de importación";
+
+    int inicioRegistro =
+        Model.TotalFiltrado == 0
+            ? 0
+            : ((Model.PaginaActual - 1) * Model.TamanoPagina) + 1;
+
+    int finRegistro =
+        Math.Min(
+            Model.PaginaActual * Model.TamanoPagina,
+            Model.TotalFiltrado);
+}
+
+<div class="container-fluid">
+
+    <!-- ENCABEZADO -->
+    <div class="importacion-header mb-4">
+
+        <div class="d-flex flex-column flex-lg-row
+                    justify-content-between
+                    align-items-lg-center
+                    gap-3">
+
+            <div>
+                <h4 class="mb-1 fw-bold">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                    Vista previa de importación
+                </h4>
+
+                <small class="text-muted">
+                    Revise y valide los registros antes de incorporarlos al catálogo.
+                </small>
+            </div>
+
+            <div class="archivo-importacion">
+
+                <i class="bi bi-file-earmark-excel text-success"></i>
+
+                <span>
+                    <span class="text-muted small">
+                        Archivo:
+                    </span>
+
+                    <span class="fw-semibold">
+                        @Model.NombreArchivo
+                    </span>
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MENSAJES -->
+    @if (TempData["MensajeExito"] is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["MensajeError"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @TempData["MensajeError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    <!-- RESUMEN -->
+    <div class="row g-3 mb-4">
+
+        <!-- TOTAL -->
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="card shadow-sm h-100 resumen-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+                            <div class="text-muted small mb-1">
+                                Total de filas
+                            </div>
+
+                            <div class="fs-3 fw-bold">
+                                @Model.TotalFilas
+                            </div>
+
+                            <div class="small text-muted">
+                                Registros procesados
+                            </div>
+                        </div>
+
+                        <div class="resumen-icono icono-total">
+                            <i class="bi bi-list-ul"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- VÁLIDAS -->
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="card shadow-sm h-100 resumen-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+                            <div class="text-muted small mb-1">
+                                Válidas
+                            </div>
+
+                            <div class="fs-3 fw-bold text-success">
+                                @Model.FilasValidas
+                            </div>
+
+                            <div class="small text-muted">
+                                Listas para importar
+                            </div>
+                        </div>
+
+                        <div class="resumen-icono icono-valido">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ERRORES -->
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="card shadow-sm h-100 resumen-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+                            <div class="text-muted small mb-1">
+                                Con errores
+                            </div>
+
+                            <div class="fs-3 fw-bold text-danger">
+                                @Model.FilasConError
+                            </div>
+
+                            <div class="small text-muted">
+                                Requieren revisión
+                            </div>
+                        </div>
+
+                        <div class="resumen-icono icono-error">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EXISTENTES -->
+        <div class="col-sm-6 col-xl-3">
+
+            <div class="card shadow-sm h-100 resumen-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+                            <div class="text-muted small mb-1">
+                                Existentes
+                            </div>
+
+                            <div class="fs-3 fw-bold text-secondary">
+                                @Model.FilasExistentes
+                            </div>
+
+                            <div class="small text-muted">
+                                Serán omitidos
+                            </div>
+                        </div>
+
+                        <div class="resumen-icono icono-existente">
+                            <i class="bi bi-database-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AVISO -->
+    @if (Model.FilasConError > 0)
+    {
+        <div class="alert alert-warning">
+
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+            Hay <strong>@Model.FilasConError</strong>
+            registro(s) con errores.
+
+            Corríjalos antes de confirmar la importación.
+
+        </div>
+    }
+    else if (Model.FilasValidas > 0)
+    {
+        <div class="alert alert-success">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
+            Todos los registros están listos para continuar con la importación.
+
+        </div>
+    }
+
+    <!-- FILTROS -->
+    <div class="card shadow-sm filtros-importacion mb-3">
+
+        <div class="card-body">
+
+            <form asp-controller="Integracion"
+                  asp-action="Preview"
+                  method="get">
+
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-lg-7">
+
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-search me-1"></i>
+                            Buscar
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="busqueda"
+                               value="@Model.Busqueda"
+                               placeholder="Ficha, clasificación, autor, título o código de barras..." />
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+                            Estado de validación
+                        </label>
+
+                        <select class="form-select"
+                                name="filtroEstado">
+
+                            <option value="Todos"
+                                    selected="@(Model.FiltroEstado == "Todos")">
+                                Todos
+                            </option>
+
+                            <option value="Validos"
+                                    selected="@(Model.FiltroEstado == "Validos")">
+                                Válidos
+                            </option>
+
+                            <option value="Errores"
+                                    selected="@(Model.FiltroEstado == "Errores")">
+                                Con errores
+                            </option>
+
+                            <option value="Existentes"
+                                    selected="@(Model.FiltroEstado == "Existentes")">
+                                Existentes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <button type="submit"
+                                class="btn btn-outline-primary w-100">
+
+                            <i class="bi bi-search me-1"></i>
+                            Buscar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="card shadow-sm tabla-importacion-card mb-4">
+
+        <div class="card-header bg-white
+                    d-flex flex-column flex-md-row
+                    justify-content-between
+                    align-items-md-center
+                    gap-2">
+
+            <div>
+                <div class="fw-semibold">
+                    <i class="bi bi-table me-1"></i>
+                    Registros del archivo
+                </div>
+
+                <small class="text-muted">
+                    Información detectada en el archivo Excel.
+                </small>
+            </div>
+
+            <small class="text-muted">
+
+                Mostrando
+
+                <strong>
+                    @inicioRegistro-@finRegistro
+                </strong>
+
+                de
+
+                <strong>
+                    @Model.TotalFiltrado
+                </strong>
+
+                registro(s)
+
+            </small>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.FilasPagina.Count == 0)
+            {
+                <div class="text-center py-5 text-muted">
+
+                    <i class="bi bi-search fs-1 d-block mb-2"></i>
+
+                    <div class="fw-semibold">
+                        No se encontraron registros
+                    </div>
+
+                    <small>
+                        Cambie los filtros o la búsqueda para mostrar otros resultados.
+                    </small>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover
+                                  align-middle mb-0
+                                  tabla-importacion">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>Fila</th>
+                                <th>Ficha</th>
+                                <th>Clasificación</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Año</th>
+                                <th>Código</th>
+                                <th>Estado</th>
+                                <th>Validación</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var fila in Model.FilasPagina)
+                            {
+                                <tr class="@(!fila.EsValida ? "fila-error" : "")">
+
+                                    <td>
+                                        <span class="text-muted">
+                                            @fila.NumeroFila
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @fila.NumeroFicha
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @fila.Clasificacion
+                                    </td>
+
+                                    <td style="min-width: 240px;">
+                                        @fila.Titulo
+                                    </td>
+
+                                    <td style="min-width: 180px;">
+                                        @fila.Autor
+                                    </td>
+
+                                    <td>
+                                        @(fila.AnioPublicacion?.ToString() ?? "-")
+                                    </td>
+
+                                    <td>
+                                        <span class="text-nowrap">
+                                            @fila.CodigoBarras
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge bg-success">
+                                            Disponible
+                                        </span>
+
+                                    </td>
+
+                                    <td style="min-width: 180px;">
+
+                                        @if (fila.YaExiste)
+                                        {
+                                            <span class="estado-validacion estado-existente">
+
+                                                <i class="bi bi-database-check"></i>
+                                                Existente
+
+                                            </span>
+                                        }
+                                        else if (fila.EsValida)
+                                        {
+                                            <span class="estado-validacion estado-valido">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Válido
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="estado-validacion estado-error">
+
+                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                Error
+
+                                            </span>
+
+                                            @if (!string.IsNullOrWhiteSpace(fila.Error))
+                                            {
+                                                <div class="small text-danger mt-1">
+                                                    @fila.Error
+                                                </div>
+                                            }
+                                        }
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <button type="button"
+                                                class="btn btn-sm
+                                                       btn-outline-primary
+                                                       btn-editar-fila"
+                                                data-numero-fila="@fila.NumeroFila"
+                                                title="Editar fila">
+
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            Editar
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+        <!-- PAGINACIÓN -->
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="card-footer bg-white">
+
+                <nav aria-label="Paginación de importación">
+
+                    <ul class="pagination pagination-sm
+                               justify-content-center mb-0">
+
+                        <li class="page-item
+                            @(Model.PaginaActual <= 1
+                                ? "disabled"
+                                : "")">
+
+                            <a class="page-link"
+                               asp-controller="Integracion"
+                               asp-action="Preview"
+                               asp-route-pagina="@(Model.PaginaActual - 1)"
+                               asp-route-busqueda="@Model.Busqueda"
+                               asp-route-filtroEstado="@Model.FiltroEstado">
+
+                                <i class="bi bi-chevron-left me-1"></i>
+                                Anterior
+
+                            </a>
+
+                        </li>
+
+                        @{
+                            int inicio =
+                                Math.Max(
+                                    1,
+                                    Model.PaginaActual - 2);
+
+                            int fin =
+                                Math.Min(
+                                    Model.TotalPaginas,
+                                    Model.PaginaActual + 2);
+                        }
+
+                        @for (int pagina = inicio;
+                              pagina <= fin;
+                              pagina++)
+                        {
+                            <li class="page-item
+                                @(pagina == Model.PaginaActual
+                                    ? "active"
+                                    : "")">
+
+                                <a class="page-link"
+                                   asp-controller="Integracion"
+                                   asp-action="Preview"
+                                   asp-route-pagina="@pagina"
+                                   asp-route-busqueda="@Model.Busqueda"
+                                   asp-route-filtroEstado="@Model.FiltroEstado">
+
+                                    @pagina
+
+                                </a>
+
+                            </li>
+                        }
+
+                        <li class="page-item
+                            @(Model.PaginaActual >= Model.TotalPaginas
+                                ? "disabled"
+                                : "")">
+
+                            <a class="page-link"
+                               asp-controller="Integracion"
+                               asp-action="Preview"
+                               asp-route-pagina="@(Model.PaginaActual + 1)"
+                               asp-route-busqueda="@Model.Busqueda"
+                               asp-route-filtroEstado="@Model.FiltroEstado">
+
+                                Siguiente
+                                <i class="bi bi-chevron-right ms-1"></i>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+        }
+
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="acciones-importacion mb-4">
+
+        <div class="d-flex flex-column flex-md-row
+                    justify-content-between
+                    align-items-md-center
+                    gap-3">
+
+            <div>
+
+                <div class="fw-semibold">
+                    ¿Terminó de revisar los registros?
+                </div>
+
+                <small class="text-muted">
+
+                    @if (Model.FilasConError > 0)
+                    {
+                        <span>
+                            Corrija los errores antes de confirmar.
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            Los registros válidos serán incorporados al catálogo.
+                        </span>
+                    }
+
+                </small>
+
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+
+                <form asp-controller="Integracion"
+                      asp-action="Cancelar"
+                      method="post"
+                      id="formCancelarImportacion">
+
+                    <button type="submit"
+                            class="btn btn-outline-secondary">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar importación
+
+                    </button>
+
+                </form>
+
+                <form asp-controller="Integracion"
+                      asp-action="Confirmar"
+                      method="post"
+                      id="formConfirmarImportacion">
+
+                    <button type="submit"
+                            class="btn btn-success"
+                        @(Model.FilasConError > 0 ? "disabled" : null)>
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Confirmar importación
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade"
+     id="modalEditarFila"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content modal-content-importacion">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Editar registro
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+
+            </div>
+
+            <div id="contenidoModalEditarFila">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (() => {
+
+            const modalElemento =
+                document.getElementById("modalEditarFila");
+
+            const contenidoModal =
+                document.getElementById("contenidoModalEditarFila");
+
+            if (!modalElemento || !contenidoModal)
+                return;
+
+            const modal =
+                new bootstrap.Modal(modalElemento);
+
+            document.querySelectorAll(".btn-editar-fila")
+                .forEach(boton => {
+
+                    boton.addEventListener("click", async () => {
+
+                        const numeroFila =
+                            boton.dataset.numeroFila;
+
+                        contenidoModal.innerHTML =
+                            `
+                            <div class="modal-body text-center py-5">
+                                <div class="spinner-border text-primary"
+                                     role="status">
+                                </div>
+
+                                <div class="mt-2 text-muted">
+                                    Cargando registro...
+                                </div>
+                            </div>
+                            `;
+
+                        modal.show();
+
+                        try {
+
+                            const respuesta =
+                                await fetch(
+                                    `/Integracion/EditarFilaModal?numeroFila=${numeroFila}`
+                                );
+
+                            if (!respuesta.ok)
+                                throw new Error();
+
+                            contenidoModal.innerHTML =
+                                await respuesta.text();
+
+                            activarFormularioEdicion();
+
+                        }
+                        catch {
+
+                            contenidoModal.innerHTML =
+                                `
+                                <div class="modal-body">
+                                    <div class="alert alert-danger mb-0">
+                                        No fue posible cargar el registro.
+                                    </div>
+                                </div>
+                                `;
+
+                        }
+
+                    });
+
+                });
+
+            function activarFormularioEdicion() {
+
+                const form =
+                    document.getElementById("formEditarFila");
+
+                if (!form)
+                    return;
+
+                if (window.jQuery &&
+                    window.jQuery.validator &&
+                    window.jQuery.validator.unobtrusive) {
+
+                    const formularioJquery =
+                        window.jQuery(form);
+
+                    formularioJquery
+                        .removeData("validator")
+                        .removeData("unobtrusiveValidation");
+
+                    window.jQuery.validator.unobtrusive
+                        .parse(formularioJquery);
+                }
+
+                form.addEventListener("submit", async evento => {
+
+                    evento.preventDefault();
+
+                    if (window.jQuery &&
+                        !window.jQuery(form).valid()) {
+                        return;
+                    }
+
+                    const botonGuardar =
+                        form.querySelector(
+                            'button[type="submit"]'
+                        );
+
+                    if (botonGuardar)
+                        botonGuardar.disabled = true;
+
+                    try {
+
+                        const respuesta =
+                            await fetch(
+                                form.action,
+                                {
+                                    method: "POST",
+                                    body: new FormData(form)
+                                }
+                            );
+
+                        const contentType =
+                            respuesta.headers.get(
+                                "content-type"
+                            ) ?? "";
+
+                        if (contentType.includes(
+                            "application/json")) {
+
+                            const resultado =
+                                await respuesta.json();
+
+                            if (resultado.success) {
+
+                                modal.hide();
+
+                                if (typeof Swal !== "undefined") {
+
+                                    await Swal.fire({
+                                        icon: "success",
+                                        title: "Registro actualizado",
+                                        text: resultado.message,
+                                        confirmButtonText: "Aceptar"
+                                    });
+
+                                }
+
+                                window.location.reload();
+                                return;
+                            }
+
+                            if (typeof Swal !== "undefined") {
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "No fue posible guardar",
+                                    text: resultado.message,
+                                    confirmButtonText: "Aceptar"
+                                });
+
+                            }
+
+                            return;
+                        }
+
+                        contenidoModal.innerHTML =
+                            await respuesta.text();
+
+                        activarFormularioEdicion();
+
+                    }
+                    catch {
+
+                        if (typeof Swal !== "undefined") {
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "No fue posible actualizar el registro.",
+                                confirmButtonText: "Aceptar"
+                            });
+
+                        }
+
+                    }
+                    finally {
+
+                        if (botonGuardar)
+                            botonGuardar.disabled = false;
+
+                    }
+
+                });
+            }
+
+            const formConfirmar =
+                document.getElementById(
+                    "formConfirmarImportacion"
+                );
+
+            if (formConfirmar) {
+
+                formConfirmar.addEventListener(
+                    "submit",
+                    async evento => {
+
+                        if (typeof Swal === "undefined")
+                            return;
+
+                        evento.preventDefault();
+
+                        const resultado =
+                            await Swal.fire({
+                                icon: "question",
+                                title: "¿Confirmar importación?",
+                                text:
+                                    "Los registros válidos serán incorporados al catálogo.",
+                                showCancelButton: true,
+                                confirmButtonText: "Sí, importar",
+                                cancelButtonText: "Cancelar"
+                            });
+
+                        if (resultado.isConfirmed)
+                            formConfirmar.submit();
+
+                    });
+            }
+
+            const formCancelar =
+                document.getElementById(
+                    "formCancelarImportacion"
+                );
+
+            if (formCancelar) {
+
+                formCancelar.addEventListener(
+                    "submit",
+                    async evento => {
+
+                        if (typeof Swal === "undefined")
+                            return;
+
+                        evento.preventDefault();
+
+                        const resultado =
+                            await Swal.fire({
+                                icon: "warning",
+                                title: "¿Cancelar importación?",
+                                text:
+                                    "La vista previa actual será descartada.",
+                                showCancelButton: true,
+                                confirmButtonText: "Sí, cancelar",
+                                cancelButtonText: "Continuar revisando"
+                            });
+
+                        if (resultado.isConfirmed)
+                            formCancelar.submit();
+
+                    });
+            }
+
+        })();
+    </script>
+}

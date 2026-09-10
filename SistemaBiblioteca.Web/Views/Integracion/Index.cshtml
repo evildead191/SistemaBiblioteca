@@ -1,0 +1,285 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Integracion.IntegracionIndexViewModel
+
+@{
+    ViewData["Title"] = "Importación";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="importacion-header mb-4">
+
+        <div class="d-flex flex-column flex-md-row
+            justify-content-between
+            align-items-md-center
+            gap-2">
+
+            <div>
+                <h4 class="mb-0 fw-bold">
+                    <i class="bi bi-file-earmark-arrow-up me-1"></i>
+                    Importación de catálogo
+                </h4>
+
+                <small class="text-muted">
+                    Importe materiales bibliográficos y ejemplares desde un archivo Excel.
+                </small>
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (TempData["MensajeExito"] is not null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["MensajeExito"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    @if (TempData["MensajeError"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["MensajeError"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4 filtros-importacion">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-file-earmark-excel me-2"></i>
+                Cargar archivo
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <form asp-controller="Integracion"
+                  asp-action="Cargar"
+                  method="post"
+                  enctype="multipart/form-data"
+                  id="formCargarIntegracion">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-lg-8">
+                        <label for="archivo"
+                               class="form-label fw-semibold">
+                            Archivo Excel
+                        </label>
+
+                        <input type="file"
+                               class="form-control"
+                               id="archivo"
+                               name="archivo"
+                               accept=".xlsx"
+                               required />
+
+                        <div class="form-text">
+                            Seleccione un archivo .xlsx con la estructura requerida por el sistema.
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <button type="submit"
+                                class="btn btn-primary w-100"
+                                id="btnProcesarArchivo">
+                            <i class="bi bi-search me-1"></i>
+                            Procesar y validar
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+            <hr class="my-4" />
+
+            <div class="row g-3">
+                <div class="col-lg-7">
+                    <h6 class="fw-bold mb-2">
+                        Antes de importar
+                    </h6>
+
+                    <p class="text-muted mb-2">
+                        El archivo será validado antes de realizar cambios
+                        en el catálogo.
+                    </p>
+
+                    <p class="text-muted mb-0">
+                        Después del procesamiento podrá revisar los registros,
+                        corregir filas con errores y confirmar la importación.
+                    </p>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="border rounded p-3 bg-light">
+                        <div class="fw-semibold mb-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Formato admitido
+                        </div>
+
+                        <div class="small text-muted">
+                            <div>
+                                <strong>Tipo:</strong> Microsoft Excel (.xlsx)
+                            </div>
+
+                            <div>
+                                <strong>Estado inicial:</strong> Disponible
+                            </div>
+
+                            <div>
+                                <strong>Duplicados:</strong> se validan por código de barras
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm tabla-importacion-card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-clock-history me-2"></i>
+                Historial de importaciones
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model.Historial.Count == 0)
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+
+                    <div class="fw-semibold">
+                        No existen importaciones registradas
+                    </div>
+
+                    <small>
+                        Las importaciones realizadas aparecerán aquí.
+                    </small>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 tabla-importacion">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Archivo</th>
+                                <th>Usuario</th>
+                                <th class="text-center">
+                                    Procesadas
+                                </th>
+                                <th class="text-center">
+                                    Importadas
+                                </th>
+                                <th class="text-center">
+                                    Errores
+                                </th>
+                                <th>Estado</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.Historial)
+                            {
+                                <tr>
+                                    <td class="text-nowrap">
+                                        @item.FechaProceso.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-semibold">
+                                            @item.NombreArchivo
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.UsuarioEjecutor
+                                    </td>
+
+                                    <td class="text-center">
+                                        @item.FilasProcesadas
+                                    </td>
+
+                                    <td class="text-center">
+                                        @item.FilasImportadas
+                                    </td>
+
+                                    <td class="text-center">
+                                        @item.FilasConError
+                                    </td>
+
+                                    <td>
+                                        @if (item.Estado.Equals(
+                                            "Completado",
+                                            StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-success">
+                                                Completado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @item.Estado
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <span class="small text-muted">
+                                            @item.Detalle
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+        (() => {
+            const form =
+                document.getElementById("formCargarIntegracion");
+
+            const boton =
+                document.getElementById("btnProcesarArchivo");
+
+            if (!form || !boton)
+                return;
+
+            form.addEventListener("submit", () => {
+                boton.disabled = true;
+
+                boton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" ' +
+                    'aria-hidden="true"></span>Procesando...';
+            });
+        })();
+    </script>
+}

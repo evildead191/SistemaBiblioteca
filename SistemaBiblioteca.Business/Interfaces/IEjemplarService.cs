@@ -6,6 +6,11 @@ namespace SistemaBiblioteca.Business.Interfaces;
 public interface IEjemplarService
 {
     Task<List<EjemplarDto>> ObtenerTodosAsync(
+    string? busqueda = null,
+    int pagina = 1,
+    int tamanoPagina = 25);
+
+    Task<int> ContarFiltradosAsync(
         string? busqueda = null);
 
     Task<EjemplarDto?> ObtenerPorIdAsync(int id);

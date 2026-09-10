@@ -119,6 +119,27 @@ builder.Services.AddScoped<
     IReporteExcelService,
     ReporteExcelService>();
 
+builder.Services.AddScoped<
+    IIntegracionRepository,
+    IntegracionRepository>();
+
+builder.Services.AddScoped<
+    IIntegracionService,
+    IntegracionService>();
+
+/*
+ * La sesión se utiliza únicamente para conservar
+ * temporalmente la vista previa de una importación.
+ */
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -164,7 +185,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 /*
- * IMPORTANTE:
  * Los archivos estáticos deben quedar disponibles
  * incluso cuando el usuario todavía no inició sesión.
  */
@@ -174,6 +194,12 @@ app.MapStaticAssets()
     .AllowAnonymous();
 
 app.UseRouting();
+
+/*
+ * Session debe ejecutarse después de Routing
+ * y antes de los controladores que la utilizarán.
+ */
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,0 +1,163 @@
+﻿@model SistemaBiblioteca.Web.ViewModels.Integracion.IntegracionEditarFilaViewModel
+
+<form asp-controller="Integracion"
+      asp-action="EditarFila"
+      method="post"
+      id="formEditarFila">
+
+    <input asp-for="NumeroFila"
+           type="hidden" />
+
+    <div class="modal-body">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="alert alert-light border mb-3">
+            <i class="bi bi-info-circle me-1"></i>
+            Editando la fila
+            <strong>@Model.NumeroFila</strong>
+            del archivo.
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label asp-for="NumeroFicha"
+                       class="form-label">
+                </label>
+
+                <input asp-for="NumeroFicha"
+                       class="form-control" />
+
+                <span asp-validation-for="NumeroFicha"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Clasificacion"
+                       class="form-label">
+                </label>
+
+                <input asp-for="Clasificacion"
+                       class="form-control" />
+
+                <span asp-validation-for="Clasificacion"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="Titulo"
+                       class="form-label">
+                </label>
+
+                <input asp-for="Titulo"
+                       class="form-control" />
+
+                <span asp-validation-for="Titulo"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-8">
+                <label asp-for="Autor"
+                       class="form-label">
+                </label>
+
+                <input asp-for="Autor"
+                       class="form-control" />
+
+                <span asp-validation-for="Autor"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="AnioPublicacion"
+                       class="form-label">
+                </label>
+
+                <input asp-for="AnioPublicacion"
+                       class="form-control"
+                       type="number"
+                       min="1000"
+                       max="@DateTime.Now.Year" />
+
+                <span asp-validation-for="AnioPublicacion"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="CodigoBarras"
+                       class="form-label">
+                </label>
+
+                <input asp-for="CodigoBarras"
+                       class="form-control" />
+
+                <span asp-validation-for="CodigoBarras"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="NumeroInscripcion"
+                       class="form-label">
+                </label>
+
+                <input asp-for="NumeroInscripcion"
+                       class="form-control" />
+
+                <span asp-validation-for="NumeroInscripcion"
+                      class="text-danger small">
+                </span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">
+                    Estado
+                </label>
+
+                <input class="form-control"
+                       value="Disponible"
+                       readonly />
+
+                <input asp-for="Estado"
+                       type="hidden" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Biblioteca"
+                       class="form-label">
+                    Biblioteca
+                </label>
+
+                <input asp-for="Biblioteca"
+                       class="form-control" />
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">
+            Cancelar
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary">
+            <i class="bi bi-check-lg me-1"></i>
+            Guardar cambios
+        </button>
+
+    </div>
+
+</form>

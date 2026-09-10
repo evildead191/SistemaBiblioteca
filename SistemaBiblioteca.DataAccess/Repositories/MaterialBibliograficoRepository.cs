@@ -53,6 +53,14 @@ public class MaterialBibliograficoRepository
             .ToListAsync();
     }
 
+    public async Task<MaterialBibliografico?> ObtenerPorNumeroFichaAsync(
+    string numeroFicha)
+    {
+        return await _context.MaterialesBibliograficos
+            .FirstOrDefaultAsync(m =>
+                m.NumeroFicha == numeroFicha);
+    }
+
     public async Task<MaterialBibliografico?> ObtenerPorIdAsync(int id)
     {
         return await _context.MaterialesBibliograficos

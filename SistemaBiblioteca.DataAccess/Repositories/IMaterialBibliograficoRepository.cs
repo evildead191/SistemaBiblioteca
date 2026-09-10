@@ -9,6 +9,9 @@ public interface IMaterialBibliograficoRepository
 
     Task<MaterialBibliografico?> ObtenerPorIdAsync(int id);
 
+    Task<MaterialBibliografico?> ObtenerPorNumeroFichaAsync(
+        string numeroFicha);
+
     Task<bool> ExisteNumeroFichaAsync(
         string numeroFicha,
         int? idExcluir = null);

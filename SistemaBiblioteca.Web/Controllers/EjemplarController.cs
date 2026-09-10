@@ -27,15 +27,44 @@ public class EjemplarController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Index(
-        string? busqueda = null)
+    string? busqueda = null,
+    int pagina = 1)
     {
+        const int tamanoPagina = 25;
+
+        pagina = Math.Max(pagina, 1);
+
+        int totalRegistros =
+            await _ejemplarService
+                .ContarFiltradosAsync(busqueda);
+
+        int totalPaginas =
+            totalRegistros == 0
+                ? 0
+                : (int)Math.Ceiling(
+                    totalRegistros / (double)tamanoPagina);
+
+        if (totalPaginas > 0 &&
+            pagina > totalPaginas)
+        {
+            pagina = totalPaginas;
+        }
+
         EjemplarIndexViewModel viewModel = new()
         {
             Busqueda = busqueda,
 
+            PaginaActual = pagina,
+
+            TamanoPagina = tamanoPagina,
+
+            TotalRegistros = totalRegistros,
+
             Ejemplares =
                 await _ejemplarService.ObtenerTodosAsync(
-                    busqueda)
+                    busqueda,
+                    pagina,
+                    tamanoPagina)
         };
 
         return View(viewModel);
